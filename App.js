@@ -26,11 +26,14 @@ export default function App() {
   
   return (
 
+     <>
+      <StatusBar style="auto" />
       
-      <Provider store={store}>
+    <Provider store={store}>
+      
       <AuthNavigation />
       </Provider>
-    
+      </> 
   
   );
 }
