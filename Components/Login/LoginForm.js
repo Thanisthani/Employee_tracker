@@ -39,7 +39,7 @@ const LoginForm = () => {
         setLoginError(message);
        
     })
-        await console.log(authUser)
+        await console.log(authUser,"login form")
     }
 
   return (

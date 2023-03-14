@@ -25,14 +25,21 @@ const initialState = {
 
 // check user authenticated or not
 export const isUserLogin = createAsyncThunk('user/isuser', async () => {
-    onAuthStateChanged(auth, user => {
+    let isUser = false;
+   await  onAuthStateChanged(auth, user => {
         if (user) {
-            return true;
+            console.log('user on auth slice')
+         isUser = true
+          
         }
         else {
-            return false;
+            console.log('authslice unauthorized')
+            isUser = false
+            
         }
-    });
+   });
+    
+    return isUser;
 });
 
 // slice
@@ -61,7 +68,8 @@ export const authSlice = createSlice({
     //         state.isAuthenticated = false;
     //         state.errMessage = action.payload;
     //   });
-      builder.addCase(isUserLogin.fulfilled, (state, action) => {
+        builder.addCase(isUserLogin.fulfilled, (state, action) => {
+            console.log(action.payload)
         state.isAuthenticated = action.payload;
       });
     }

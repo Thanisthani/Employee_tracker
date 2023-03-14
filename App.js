@@ -7,9 +7,9 @@ import {
   Poppins_600SemiBold,
   Poppins_300Light
 } from "@expo-google-fonts/poppins";
-import LoginScreen from './Screens/LoginScreen';
 import { Provider } from 'react-redux';
 import { store } from './features/store';
+import AuthNavigation from './AuthNavigation';
 
 
 export default function App() {
@@ -25,14 +25,13 @@ export default function App() {
   }
   
   return (
-    <View style={styles.container}>
-      <StatusBar style="auto" />
+
       
       <Provider store={store}>
-        <LoginScreen />  
+      <AuthNavigation />
       </Provider>
     
-    </View>
+  
   );
 }
 
