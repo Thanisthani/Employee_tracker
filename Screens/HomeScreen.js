@@ -7,6 +7,7 @@ import {
 import { RFPercentage } from 'react-native-responsive-fontsize';
 import { PrimaryColor, TextPrimaryColor } from '../constants/Color';
 import { SimpleLineIcons } from '@expo/vector-icons';
+import GeoFencing from '../Components/Home/GeoFencing';
 
 const HomeScreen = () => {
 
@@ -15,7 +16,8 @@ const HomeScreen = () => {
     <View style={styles.container}>
       <Text style={styles.mainHeading}>Summary</Text>
       {/* Timer */}
-      <View style={styles.timerBox}>
+      <GeoFencing />
+      {/* <View style={styles.timerBox}>
         <Text style={styles.subHeading}> Total worked today:</Text>
         <View style={styles.timerWrapper}>
           <Text style={styles.timer}>06:13:04</Text>
@@ -24,7 +26,7 @@ const HomeScreen = () => {
         <SimpleLineIcons name="location-pin" size={RFPercentage(2.5)} color="#c1c1c1" />
           <Text style={styles.locationText}> East Wing A</Text>
         </View>
-      </View>
+      </View> */}
 
       {/* Activity details */}
       <Text style={styles.actText}>Activity Details</Text>
