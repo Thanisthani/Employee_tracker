@@ -9,96 +9,164 @@ import {
 import { PrimaryColor } from '../../constants/Color';
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
+import {getGeoCoords, isEnter, setIsEnter } from '../../services/storage';
+import { isPointWithinRadius } from 'geolib';
+import { Stopwatch} from 'react-native-stopwatch-timer';
 
-let something = false;
+const LOCATION_TASK_NAME = "GEOFENCING";
 
+let coordinates=[];
 
+// Bg task
+TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
+  if (error)
+  {
+    console.log(error, 'IN task manager');
+    return;
+}
+  // console.log('[tracking]', 'Received new locations', locations[0].coords );
   
-const GeoFencing = () => {
- const [ isEnter, setIsEnter ] = useState(something);
-    const LOCATION_TASK_NAME = "GEOFENCING";
-    TaskManager.defineTask("GEOFENCING", ({ data: { eventType, region }, error }) => {
-      if (error) {
-          console.log(error, 'IN task manager')
-        return;
+  try
+  {
+    // Check point whether it's inside geofence or not
+    for (coords of coordinates)
+    {
+      console.log('coords name', coords.name);
+      const status= isPointWithinRadius(
+        { latitude: locations[0].coords.latitude, longitude: locations[0].coords.longitude },
+        { latitude: coords.latitude, longitude: coords.longitude }, 
+        coords.radius  //Geofence Radius
+      );
+       // Store geofence status on local storage
+    if (status)
+    {
+      console.log('Status of geofence true');
+      setIsEnter('inside');
+      break;
     }
-    // console.log("Task manager geo fencing ",region)
-    const stateString = Location.GeofencingRegionState[region.state].toLowerCase();
-    console.log('Geo location state ',stateString)
-      if (eventType === Location.GeofencingEventType.Enter) {
-        setIsEnter(true);
-        console.log("You've entered region:", region);
-      } else if (eventType === Location.GeofencingEventType.Exit) {
-        setIsEnter(false);
-        console.log("You've left region:", region);
-      }
-    });
-  
+    else
+    {
+      console.log('Status of geofence false');
+      setIsEnter('outside')
+    }
+    }
+ 
+  }
+  catch (error)
+  {
+    console.log('task manger erfror', error);
+  }
+});
 
-    let geofence = {
-        latitude:6.879635905323236, 
-        longitude:79.86587458864574,
-        radius: 1000,
-        notifyOnEnter: true,
-        notifyOnExit: true,
-    };
-  const requestPermission = async () => {
-    
+// Main component
+const GeoFencing = () =>
+{
+  // check geofence status
+  const [enter, setEnter] = useState(false);
+
+  // start location updates
+  const requestPermission = async () =>
+  {
+    coordinates =  await getGeoCoords();
+    console.log("Geo coordinates", coordinates);
     const foreground = await Location.requestForegroundPermissionsAsync();
-    if (foreground.granted) {
+    if (foreground.granted)
+    {
       const background = await Location.requestBackgroundPermissionsAsync();
-      if (!background.granted) {
+      console.log('permission grantted')
+      if (!background.granted)
+      {
         console.log('Permission to access location was denied');
       }
     }
-    else {
+    else
+    {
       console.log('Permission to access location was denied');
     }
 
-    const { coords } = await Location.getCurrentPositionAsync();
-   await console.log("current location ", coords)
-   // Make sure the task is defined otherwise do not start tracking
-    const isTaskDefined = await TaskManager.isTaskDefined(LOCATION_TASK_NAME)
-    console.log('Task defined ', isTaskDefined)
+    // const { coords } = await Location.getCurrentPositionAsync();
+    // await console.log("current location", coords);
 
-    if (!isTaskDefined) {
-     console.log("Task is not defined")
-     return
-   }
-    await Location.startGeofencingAsync(LOCATION_TASK_NAME, [geofence]).then((value) => {
-      console.log(`Started geofencing`,isEnter);
-    }).catch((error) => {
-      console.log(`Error starting geofencing , error: ${error}`);
-    }); 
+    // Check task manager defined or not
+    const isTaskDefined = await TaskManager.isTaskDefined(LOCATION_TASK_NAME);
+
+    if (!isTaskDefined)
+    {
+      console.log("Task is not defined ")
+      return
+    }
+
+    // Live location update
+    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
+      accuracy: Location.Accuracy.BestForNavigation,
+      timeInterval: 3 * 60 * 1000, //time duration to check location
+      // android behavior
+      foregroundService: {
+        notificationTitle: 'Office marathon is active',
+        notificationBody: 'Monitoring your location to measure total distance',
+        notificationColor: '#333333',
+      },
+      // ios behavior
+      activityType: Location.ActivityType.Fitness,
+      showsBackgroundLocationIndicator: true,
+    });
+    console.log('[tracking]', 'started background location task');
   }
 
-    useEffect( () => {
-      requestPermission();
-    }, []);
+  useEffect(() => {
+    
+    requestPermission();  
+  }, []);
+  
+  // get status value from local storage
+  useEffect(() => {
+    const interval = setInterval(async () =>
+    {
+    
+      const geoEnter = await isEnter();
+      if (geoEnter == 'inside')
+      {
+        setEnter(true);
+      }
+      else {
+        setEnter(false);
+      }
+     
+      console.log('timer trigger');
+    },  2 * 60 * 1000);
+  
+    return () => clearInterval(interval);
+  }, []);
+
   
   return (
-     
       <View style={styles.timerBox}>
            {/* Timer */}
         <Text style={styles.subHeading}> Total worked today:</Text>
         <View style={styles.timerWrapper}>
-          <Text style={styles.timer}>06:13:04</Text>
+        {/* <Text style={styles.timer}>06:13:04</Text> */}
+        <Stopwatch
+            laps
+            msecs={false}
+            start={enter}
+            // To start
+            options={options}
+            // Options for the styling
+          />
       </View>
-      <View>
-        {isEnter? 
-          <Text style={styles.locationText}>Entered geofence</Text>
-        :<Text style={styles.locationText}>Not entered</Text>}
-      </View>
+      {/* <View>
+        {enter=='inside'? 
+          <Text style={styles.locationText}>Entered geofence { enter}</Text>
+          : <Text style={styles.locationText}>Not entered { enter}</Text>}
+      </View> */}
         <View style={styles.bottomWrap}>
         <SimpleLineIcons name="location-pin" size={RFPercentage(2.5)} color="#c1c1c1" />
           <Text style={styles.locationText}> East Wing A</Text>
         </View>
       </View>
   )
-
-
-  
 }
+
 
 
 const styles = StyleSheet.create({
@@ -106,7 +174,7 @@ const styles = StyleSheet.create({
         marginTop:hp('2%'),
         backgroundColor: PrimaryColor,
         width: wp('90%'),
-        height: hp('28%'),
+        height: hp('22%'),
         borderRadius: hp('1.5%'),
         padding: hp('2%'),
         justifyContent:'space-between'
@@ -137,4 +205,17 @@ const styles = StyleSheet.create({
     }
 });
 
-export default GeoFencing
+const options = {
+  // container: {
+  //   backgroundColor: ,
+    
+  // },
+  text: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: RFPercentage(6),
+    color: '#ffffff'
+  },
+};
+
+
+export default GeoFencing;

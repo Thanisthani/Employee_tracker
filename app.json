@@ -2,7 +2,7 @@
   "expo": {
     "name": "Employee_tracker",
     "slug": "Employee_tracker",
-    "version": "1.0.0",
+    "version": "1.2.0",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -28,10 +28,10 @@
         "foregroundImage": "./assets/adaptive-icon.png",
         "backgroundColor": "#ffffff"
       },
-      "permission": [
-        "ACCESS_COARSE_LOCATION",
+      "permissions": [
         "ACCESS_FINE_LOCATION",
-        "ACCESS_BACKGROUND_LOCATION"
+        "ACCESS_BACKGROUND_LOCATION",
+        "FOREGROUND_SERVICE"
       ],
       "package": "com.thanistas.Employee_tracker"
     },

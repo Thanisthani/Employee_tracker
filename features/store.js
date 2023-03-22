@@ -1,9 +1,11 @@
 import { configureStore,combineReducers,applyMiddleware } from '@reduxjs/toolkit';
 import authReducer from './authSlice';
-import thunk from 'redux-thunk';               
+import geoReducer from './geoFenceSlice'
+              
 
 const rootReducer = combineReducers({
-    auth: authReducer
+  auth: authReducer,
+  geo: geoReducer
 })
 export const store = configureStore({
   reducer: rootReducer

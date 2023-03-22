@@ -11,7 +11,9 @@ import { PrimaryColor } from '../../constants/Color';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess,loginFailed } from '../../features/authSlice';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
+import { setGeoCoords } from '../../services/storage';
+import { collection, onSnapshot } from '@firebase/firestore';
   
 const LoginForm = () => {
     const dispatch = useDispatch();
@@ -27,19 +29,24 @@ const LoginForm = () => {
     // handle form submit
     const userSignin = async (values) => {
         signInWithEmailAndPassword(auth, values.email, values.password)
-        .then((re) => {
-        console.log("Sucessfully log in ");
-        dispatch(loginSuccess());
-            setLoginError(null);
-    })
-    .catch((re) => {
-        console.log(re + "hi");
-        const message = "Please check your email & password !";
-        dispatch(loginFailed());
-        setLoginError(message);
+            .then(async (re) => {
+                console.log("Sucessfully log in ");
+
+                const sites = await collection(db, 'Sites');
+                await onSnapshot(sites, (snapshot) => {
+                    setGeoCoords((snapshot.docs.map((site) => ({ id: site.id, ...site.data() }))));
+                });
+                setLoginError(null);
+
+                await dispatch(loginSuccess());
+            })
+            .catch((re) => {
+                console.log(re + "hi");
+                const message = "Please check your email & password !";
+                dispatch(loginFailed());
+                setLoginError(message);
        
-    })
-        await console.log(authUser,"login form")
+            });
     }
 
   return (
