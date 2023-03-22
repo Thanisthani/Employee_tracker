@@ -84,8 +84,8 @@ const GeoFencing = () =>
       console.log('Permission to access location was denied');
     }
 
-    // const { coords } = await Location.getCurrentPositionAsync();
-    // await console.log("current location", coords);
+    const { coords } = await Location.getCurrentPositionAsync();
+    await console.log("current location", coords);
 
     // Check task manager defined or not
     const isTaskDefined = await TaskManager.isTaskDefined(LOCATION_TASK_NAME);
@@ -99,11 +99,11 @@ const GeoFencing = () =>
     // Live location update
     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       accuracy: Location.Accuracy.BestForNavigation,
-      timeInterval: 3 * 60 * 1000, //time duration to check location
+      timeInterval:  10 * 1000, //time duration to check location
       // android behavior
       foregroundService: {
-        notificationTitle: 'Office marathon is active',
-        notificationBody: 'Monitoring your location to measure total distance',
+        notificationTitle: 'Employee tracker is active',
+        notificationBody: 'Monitoring your location in background',
         notificationColor: '#333333',
       },
       // ios behavior
@@ -133,7 +133,7 @@ const GeoFencing = () =>
       }
      
       console.log('timer trigger');
-    },  2 * 60 * 1000);
+    },  15 * 1000);
   
     return () => clearInterval(interval);
   }, []);
@@ -154,12 +154,7 @@ const GeoFencing = () =>
             // Options for the styling
           />
       </View>
-      {/* <View>
-        {enter=='inside'? 
-          <Text style={styles.locationText}>Entered geofence { enter}</Text>
-          : <Text style={styles.locationText}>Not entered { enter}</Text>}
-      </View> */}
-        <View style={styles.bottomWrap}>
+      <View style={styles.bottomWrap}>
         <SimpleLineIcons name="location-pin" size={RFPercentage(2.5)} color="#c1c1c1" />
           <Text style={styles.locationText}> East Wing A</Text>
         </View>
@@ -191,7 +186,7 @@ const styles = StyleSheet.create({
       },
       timerWrapper: {
         alignItems: 'center',
-        justifyContent:'center'
+        justifyContent: 'center',
       },
       timer: {
         fontFamily: 'Poppins_600SemiBold',
@@ -206,10 +201,6 @@ const styles = StyleSheet.create({
 });
 
 const options = {
-  // container: {
-  //   backgroundColor: ,
-    
-  // },
   text: {
     fontFamily: 'Poppins_600SemiBold',
     fontSize: RFPercentage(6),

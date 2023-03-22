@@ -37,7 +37,7 @@ const styles = StyleSheet.create({
   logoWrapper: {
     flex: 1,
     alignItems: "center",
-    justifyContent: 'flex-end',
+    justifyContent: 'flex-start',
     backgroundColor: '#FFFFFF'
   },
   formWrapper: {
