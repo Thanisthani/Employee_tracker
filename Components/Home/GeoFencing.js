@@ -8,55 +8,10 @@ import {
   import { RFPercentage } from 'react-native-responsive-fontsize';
 import { PrimaryColor } from '../../constants/Color';
 import * as Location from 'expo-location';
-import * as TaskManager from 'expo-task-manager';
-import {getGeoCoords, isEnter, setIsEnter } from '../../services/storage';
-import { isPointWithinRadius } from 'geolib';
+import {isEnter } from '../../services/storage';
 import { Stopwatch} from 'react-native-stopwatch-timer';
+import { getSite, locationUpdate } from '../../services/track';
 
-const LOCATION_TASK_NAME = "GEOFENCING";
-
-let coordinates=[];
-
-// Bg task
-TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
-  if (error)
-  {
-    console.log(error, 'IN task manager');
-    return;
-}
-  // console.log('[tracking]', 'Received new locations', locations[0].coords );
-  
-  try
-  {
-    // Check point whether it's inside geofence or not
-    for (coords of coordinates)
-    {
-      console.log('coords name', coords.name);
-      const status= isPointWithinRadius(
-        { latitude: locations[0].coords.latitude, longitude: locations[0].coords.longitude },
-        { latitude: coords.latitude, longitude: coords.longitude }, 
-        coords.radius  //Geofence Radius
-      );
-       // Store geofence status on local storage
-    if (status)
-    {
-      console.log('Status of geofence true');
-      setIsEnter('inside');
-      break;
-    }
-    else
-    {
-      console.log('Status of geofence false');
-      setIsEnter('outside')
-    }
-    }
- 
-  }
-  catch (error)
-  {
-    console.log('task manger erfror', error);
-  }
-});
 
 // Main component
 const GeoFencing = () =>
@@ -64,11 +19,12 @@ const GeoFencing = () =>
   // check geofence status
   const [enter, setEnter] = useState(false);
 
+  // set site name
+  const [siteName, setSiteName] = useState('No site');
+
   // start location updates
   const requestPermission = async () =>
   {
-    coordinates =  await getGeoCoords();
-    console.log("Geo coordinates", coordinates);
     const foreground = await Location.requestForegroundPermissionsAsync();
     if (foreground.granted)
     {
@@ -84,37 +40,11 @@ const GeoFencing = () =>
       console.log('Permission to access location was denied');
     }
 
-    const { coords } = await Location.getCurrentPositionAsync();
-    await console.log("current location", coords);
-
-    // Check task manager defined or not
-    const isTaskDefined = await TaskManager.isTaskDefined(LOCATION_TASK_NAME);
-
-    if (!isTaskDefined)
-    {
-      console.log("Task is not defined ")
-      return
-    }
-
-    // Live location update
-    await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
-      accuracy: Location.Accuracy.BestForNavigation,
-      timeInterval:  10 * 1000, //time duration to check location
-      // android behavior
-      foregroundService: {
-        notificationTitle: 'Employee tracker is active',
-        notificationBody: 'Monitoring your location in background',
-        notificationColor: '#333333',
-      },
-      // ios behavior
-      activityType: Location.ActivityType.Fitness,
-      showsBackgroundLocationIndicator: true,
-    });
-    console.log('[tracking]', 'started background location task');
+    // Geofence function
+    await locationUpdate();
   }
 
   useEffect(() => {
-    
     requestPermission();  
   }, []);
   
@@ -122,18 +52,19 @@ const GeoFencing = () =>
   useEffect(() => {
     const interval = setInterval(async () =>
     {
-    
       const geoEnter = await isEnter();
       if (geoEnter == 'inside')
       {
         setEnter(true);
+        const geoSite = getSite(); 
+        setSiteName(geoSite);
       }
       else {
         setEnter(false);
       }
      
       console.log('timer trigger');
-    },  15 * 1000);
+    }, 0.5* 60 * 1000);
   
     return () => clearInterval(interval);
   }, []);
@@ -156,7 +87,7 @@ const GeoFencing = () =>
       </View>
       <View style={styles.bottomWrap}>
         <SimpleLineIcons name="location-pin" size={RFPercentage(2.5)} color="#c1c1c1" />
-          <Text style={styles.locationText}> East Wing A</Text>
+        <Text style={styles.locationText}> { siteName }</Text>
         </View>
       </View>
   )

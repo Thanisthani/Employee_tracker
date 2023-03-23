@@ -1,23 +1,28 @@
-import React ,{useEffect} from 'react';
-import { useDispatch, useSelector } from 'react-redux';
-import { isUserLogin } from './features/authSlice';
+import { onAuthStateChanged } from 'firebase/auth';
+import React ,{useEffect, useState} from 'react';
+import { auth } from './firebase';
 import { SignedInStack, SignedOutStack } from './Navigation';
 
 
 const AuthNavigation = () => {
+  
+  const [currentUser, setCurrentUser] = useState(null);
 
-    const dispatch = useDispatch();
-    // redux state
-    const authUser = useSelector((state) => state.auth);
+  const userHandler = (user) => {
+      user ? setCurrentUser(user) : setCurrentUser(null);
+  }
+ 
 
-    useEffect(() => {
-      dispatch(isUserLogin());
-      console.log(authUser.isAuthenticated,"navigator" );
-    }, []);
+  useEffect(() =>
+    onAuthStateChanged(auth, user => {
+      userHandler(user);
+      console.log(user,'user details')
+    })
+    , []);
 
   return (
     <>
-    {authUser.isAuthenticated ? <SignedInStack /> : <SignedOutStack />}
+     {currentUser ? <SignedInStack /> : <SignedOutStack />}
     </>
   )
 }
