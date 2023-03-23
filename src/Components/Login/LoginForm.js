@@ -11,7 +11,7 @@ import { PrimaryColor } from '../../constants/Color';
 import { useDispatch, useSelector } from 'react-redux';
 import { loginSuccess,loginFailed } from '../../features/authSlice';
 import { signInWithEmailAndPassword } from "firebase/auth";
-import { auth, db } from '../../firebase';
+import { auth, db } from '../../../firebase';
 import { setGeoCoords } from '../../services/storage';
 import { collection, onSnapshot } from '@firebase/firestore';
   

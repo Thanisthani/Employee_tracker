@@ -1,5 +1,4 @@
 import { StatusBar } from 'expo-status-bar';
-import { StyleSheet, Text, View } from 'react-native';
 import {
   useFonts,
   Poppins_500Medium,
@@ -7,10 +6,10 @@ import {
   Poppins_600SemiBold,
   Poppins_300Light
 } from "@expo-google-fonts/poppins";
+import Index from './src';
 import { Provider } from 'react-redux';
-import { store } from './features/store';
-import AuthNavigation from './AuthNavigation';
-
+import AuthNavigation from './src/Navigation/AuthNavigation';
+import {store} from './src/features/store'
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -29,21 +28,9 @@ export default function App() {
      <>
       <StatusBar style="auto" />
       
-    <Provider store={store}>
-      
-      <AuthNavigation />
-      </Provider>
-      </> 
+      <Index />
+      </>
   
   );
 }
 
-const styles = StyleSheet.create({
-  container: {
-    flex: 1,
-    backgroundColor: '#fff',
-    alignItems: 'center',
-    justifyContent: 'center'
-  },
-
-});

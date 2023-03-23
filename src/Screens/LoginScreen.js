@@ -9,7 +9,7 @@ const LoginScreen = () =>{
     return (
       <View style={styles.container}>
         <View style={styles.logoWrapper}>
-          <Image style={styles.logoImg} source={require('../assets/images/LoginLogo.png')} />
+          <Image style={styles.logoImg} source={require('../../assets/images/LoginLogo.png')} />
         </View>
 
         <View style={styles.formWrapper}>
