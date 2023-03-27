@@ -16,7 +16,6 @@ const AuthNavigation = () => {
   useEffect(() =>
     onAuthStateChanged(auth, user => {
       userHandler(user);
-      console.log(user,'user details')
     })
     , []);
 

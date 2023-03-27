@@ -9,15 +9,27 @@ import {
 import { PrimaryColor } from '../../constants/Color';
 import * as Location from 'expo-location';
 import {isEnter } from '../../services/storage';
-import { Stopwatch} from 'react-native-stopwatch-timer';
+// import { Stopwatch} from 'react-native-stopwatch-timer';
 import { getSite, locationUpdate } from '../../services/track';
+import {useStopWatch} from '../../hooks/useStopWatch';
+import { doc, updateDoc } from 'firebase/firestore';
+import { db } from '../../../firebase';
+
 
 
 // Main component
-const GeoFencing = () =>
+const GeoFencing = ({userID}) =>
 {
-  // check geofence status
-  const [enter, setEnter] = useState(false);
+  
+  // stop watch hook
+  const {
+    time,
+    start,
+    stop,
+    reset,
+    isRunning,
+    dataLoaded
+  } = useStopWatch();
 
   // set site name
   const [siteName, setSiteName] = useState('No site');
@@ -44,56 +56,84 @@ const GeoFencing = () =>
     await locationUpdate();
   }
 
+  // Current status function
+
+  const currentStatus = async (checkIn,checkOut) =>
+  {
+    if(checkIn !=null){
+      await updateDoc(doc(db, 'Employees', userID), {
+        Check_in: checkIn,
+        Check_out: checkOut
+      });
+    }
+    else {
+      await updateDoc(doc(db, 'Employees', userID), {
+        Check_out: checkOut
+      });
+    }
+  }
+  
+ 
+
   useEffect(() => {
     requestPermission();  
   }, []);
+
+
   
   // get status value from local storage
   useEffect(() => {
     const interval = setInterval(async () =>
     {
+      await console.log('timer trigger ' ,isRunning);
       const geoEnter = await isEnter();
+      // const { isRunning } = await useStopWatch();
       if (geoEnter == 'inside')
       {
-        setEnter(true);
-        const geoSite = getSite(); 
-        setSiteName(geoSite);
+        if (!isRunning)
+        {
+          console.log('start timer')
+          start();
+          currentStatus(Date.now(), null);
+          const geoSite = getSite(); 
+          setSiteName(geoSite);
+        }
       }
-      else {
-        setEnter(false);
+      else
+      {
+        console.log('false on  timer');
+      
+        if (isRunning)
+        {
+          console.log('stop on timer')
+          stop();
+          currentStatus(null, Date.now());
+        }
       }
-     
-      console.log('timer trigger');
-    }, 0.5* 60 * 1000);
+    }, 10 * 1000);
   
     return () => clearInterval(interval);
-  }, []);
+  }, [isRunning]);
 
+  // check timer value
+  // if (!dataLoaded) {
+  //   return null;
+  // }
   
   return (
       <View style={styles.timerBox}>
            {/* Timer */}
         <Text style={styles.subHeading}> Total worked today:</Text>
         <View style={styles.timerWrapper}>
-        {/* <Text style={styles.timer}>06:13:04</Text> */}
-        <Stopwatch
-            laps
-            msecs={false}
-            start={enter}
-            // To start
-            options={options}
-            // Options for the styling
-          />
+        <Text style={styles.timer}>{ time }</Text>
       </View>
       <View style={styles.bottomWrap}>
         <SimpleLineIcons name="location-pin" size={RFPercentage(2.5)} color="#c1c1c1" />
-        <Text style={styles.locationText}> { siteName }</Text>
+        <Text style={styles.locationText}> {siteName}</Text>
         </View>
       </View>
   )
 }
-
-
 
 const styles = StyleSheet.create({
     timerBox: {
@@ -130,14 +170,5 @@ const styles = StyleSheet.create({
         // justifyContent:'space-around'
     }
 });
-
-const options = {
-  text: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: RFPercentage(6),
-    color: '#ffffff'
-  },
-};
-
 
 export default GeoFencing;

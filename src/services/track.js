@@ -56,7 +56,6 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
  export const locationUpdate = async () =>
  {
     coordinates =  await getGeoCoords();
-     console.log("Geo coordinates", coordinates);
      
     // Check task manager defined or not
     const isTaskDefined = await TaskManager.isTaskDefined(LOCATION_TASK_NAME);
@@ -70,7 +69,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
     // Live location update
     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       accuracy: Location.Accuracy.BestForNavigation,
-      timeInterval:  0.5 * 60 * 1000, //time duration to check location
+      timeInterval:5 * 1000, //time duration to check location
       // android behavior
       foregroundService: {
         notificationTitle: 'Employee tracker is active',

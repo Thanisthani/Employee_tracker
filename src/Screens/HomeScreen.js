@@ -1,4 +1,4 @@
-import React from 'react'
+import React, { useEffect, useState } from 'react'
 import { StatusBar, StyleSheet, Text, View } from 'react-native';
 import {
   widthPercentageToDP as wp,
@@ -6,45 +6,44 @@ import {
 } from 'react-native-responsive-screen';
 import { RFPercentage } from 'react-native-responsive-fontsize';
 import { PrimaryColor, TextPrimaryColor } from '../constants/Color';
-import { SimpleLineIcons } from '@expo/vector-icons';
 import GeoFencing from '../Components/Home/GeoFencing';
+import { onAuthStateChanged } from 'firebase/auth';
+import { auth } from '../../firebase';
+import ActivityDetails from '../Components/Home/ActivityDetails';
 
 const HomeScreen = () => {
+  const [currentUser, setCurrentUser] = useState(null);
 
+  const userHandler =async (user) => {
+   try {
+      user ? await setCurrentUser(user) : setCurrentUser(null);
+    }
+    catch (error)
+    {
+      console.log('error on home', error)
+    }
+  }
+ 
+
+  useEffect(() =>
+    onAuthStateChanged(auth, user => {
+      userHandler(user.uid);
+    })
+    , []);
 
   return (
     <View style={styles.container}>
       <Text style={styles.mainHeading}>Summary</Text>
       {/* Timer */}
-      <GeoFencing />
-      {/* <View style={styles.timerBox}>
-        <Text style={styles.subHeading}> Total worked today:</Text>
-        <View style={styles.timerWrapper}>
-          <Text style={styles.timer}>06:13:04</Text>
-        </View>
-        <View style={styles.bottomWrap}>
-        <SimpleLineIcons name="location-pin" size={RFPercentage(2.5)} color="#c1c1c1" />
-          <Text style={styles.locationText}> East Wing A</Text>
-        </View>
-      </View> */}
-
+      
+      
       {/* Activity details */}
-      <Text style={styles.actText}>Activity Details</Text>
-
-      <View style= {styles.actBox}>
-        <View style={styles.timeBox}>
-          <Text style={styles.label}>In time</Text>
-          <Text style={styles.timeText}>09.00 am</Text>
-        </View>
-        {/* vertical line */}
-        <View style={styles.verticalLine}></View>
-
-        <View style={styles.timeBox}>
-          <Text style={styles.label}>Out time</Text>
-          <Text style={styles.timeText}>13.34 pm</Text>
-        </View>
-        
-      </View>
+      {currentUser &&
+        <>
+        <GeoFencing userID={currentUser} />
+        <ActivityDetails userID={currentUser} />
+        </>
+      }
 
       {/* summary */}
       <View style={styles.summaryBox}>
@@ -112,40 +111,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems:'baseline'
     // justifyContent:'space-around'
-  },
-  actText: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: RFPercentage(3.2),
-    color: PrimaryColor,
-    marginVertical: hp('2%')
-  },
-  actBox: {
-    flexDirection: 'row',
-    justifyContent: 'space-between',
-    alignItems: 'center',
-    alignSelf:'center',
-    width:wp('80%')
-    
-  },
-  timeBox: {
-    // flex: 1,
-    // justifyContent: 'center'
-    // alignItems:''
-  },
-  label: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: RFPercentage(2.5),
-    color:'#636363'
-  },
-  timeText: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: RFPercentage(4),
-    color: PrimaryColor,
-  },
-  verticalLine: {
-    width: 0.5,
-    height: '100%',
-    backgroundColor:'#636363'
   },
 
   summaryBox: {
