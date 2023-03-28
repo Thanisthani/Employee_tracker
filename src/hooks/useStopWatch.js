@@ -11,14 +11,8 @@ const formatMs = (milliseconds) => {
   let minutes = Math.floor(seconds / 60);
   let hours = Math.floor(minutes / 60);
 
-  // using the modulus operator gets the remainder if the time roles over
-  // we don't do this for hours because we want them to rollover
-  // seconds = 81 -> minutes = 1, seconds = 21.
-  // 60 minutes in an hour, 60 seconds in a minute, 1000 milliseconds in a second.
   minutes = minutes % 60;
   seconds = seconds % 60;
-  // divide the milliseconds by 10 to get the tenths of a second. 543 -> 54
-  const ms = Math.floor((milliseconds % 1000) / 10);
 
   let str = `${padStart(hours)}:${padStart(minutes)}:${padStart(seconds)}`;
 
@@ -62,7 +56,6 @@ export function  useStopWatch()
             ? parseInt(persistedTimeWhenLastStopped[1])
             : 0
         );
-        console.log('timelast', persistedTimeWhenLastStopped[1]);
         setIsRunning(persistedIsRunning[1] === "true");
         setStartTime(
           persistedStartTime[1] ? parseInt(persistedStartTime[1]) : 0
@@ -78,7 +71,6 @@ export function  useStopWatch()
   }, []);
 
   useEffect(() => {
-    console.log("last stoped time", timeWhenLastStopped);
     // persist the latest data to async storage to be used later, if needed
     const persist = async () => {
       try {
@@ -107,7 +99,6 @@ export function  useStopWatch()
     }
     else
     {
-      console.log("stop tym ", time);
       if (interval.current)
       {
         setTimeWhenLastStopped(time);
@@ -122,14 +113,11 @@ export function  useStopWatch()
   {
     setIsRunning(true);
     setStartTime(Date.now());
-    console.log('trigger start function in  stop watch');
   };
 
   // stop timer
   const stop = async () =>
   {
-    await console.log('stop timer');
-    await console.log('stop fn last tym',time, timeWhenLastStopped);
     setIsRunning(false);
     setStartTime(0);
   };
@@ -152,186 +140,3 @@ export function  useStopWatch()
     dataLoaded
   };
 };
-
-
-// import { useState, useRef, useEffect } from "react";
-// import AsyncStorage from "@react-native-async-storage/async-storage";
-
-
-// const padStart = (num) => {
-//   return num.toString().padStart(2, "0");
-// };
-
-// const formatMs = (milliseconds) => {
-//   let seconds = Math.floor(milliseconds / 1000);
-//   let minutes = Math.floor(seconds / 60);
-//   let hours = Math.floor(minutes / 60);
-
-//   // using the modulus operator gets the remainder if the time roles over
-//   // we don't do this for hours because we want them to rollover
-//   // seconds = 81 -> minutes = 1, seconds = 21.
-//   // 60 minutes in an hour, 60 seconds in a minute, 1000 milliseconds in a second.
-//   minutes = minutes % 60;
-//   seconds = seconds % 60;
-//   // divide the milliseconds by 10 to get the tenths of a second. 543 -> 54
-//   const ms = Math.floor((milliseconds % 1000) / 10);
-
-//   let str = `${padStart(minutes)}:${padStart(seconds)}.${padStart(ms)}`;
-
-//   if (hours > 0) {
-//     str = `${padStart(hours)}:${str}`;
-//   }
-
-//   return str;
-// };
-
-// const ASYNC_KEYS = {
-//   timeWhenLastStopped: "timeWhenLastStopped",
-//   isRunning: "isRunning",
-//   startTime: "startTime",
-//   laps: "laps",
-// };
-
-// export const useStopWatch = () => {
-//   const [time, setTime] = useState(0);
-//   const [isRunning, setIsRunning] = useState(false);
-//   const [startTime, setStartTime] = useState(0);
-//   const [timeWhenLastStopped, setTimeWhenLastStopped] = useState(0);
-//   const [laps, setLaps] = useState([]);
-//   const [dataLoaded, setDataLoaded] = useState(false);
-
-//   const interval = useRef();
-
-//   useEffect(() => {
-//     // load data from async storage in case app was quit
-//     const loadData = async () => {
-//       try {
-//         const persistedValues = await AsyncStorage.multiGet([
-//           ASYNC_KEYS.timeWhenLastStopped,
-//           ASYNC_KEYS.isRunning,
-//           ASYNC_KEYS.startTime,
-//           ASYNC_KEYS.laps,
-//         ]);
-
-//         const [
-//           persistedTimeWhenLastStopped,
-//           persistedIsRunning,
-//           persistedStartTime,
-//           persistedLaps,
-//         ] = persistedValues;
-
-//         setTimeWhenLastStopped(
-//           persistedTimeWhenLastStopped[1]
-//             ? parseInt(persistedTimeWhenLastStopped[1])
-//             : 0
-//         );
-//         setIsRunning(persistedIsRunning[1] === "true");
-//         setStartTime(
-//           persistedStartTime[1] ? parseInt(persistedStartTime[1]) : 0
-//         );
-//         setLaps(persistedLaps[1] ? JSON.parse(persistedLaps[1]) : []);
-//         setDataLoaded(true);
-//       } catch (e) {
-//         console.log("error loading persisted data", e);
-//         setDataLoaded(true);
-//       }
-//     };
-
-//     loadData();
-//   }, []);
-
-//   useEffect(() => {
-//     // persist the latest data to async storage to be used later, if needed
-//     const persist = async () => {
-//       try {
-//         await AsyncStorage.multiSet([
-//           [ASYNC_KEYS.timeWhenLastStopped, timeWhenLastStopped.toString()],
-//           [ASYNC_KEYS.isRunning, isRunning.toString()],
-//           [ASYNC_KEYS.startTime, startTime.toString()],
-//           [ASYNC_KEYS.laps, JSON.stringify(laps)],
-//         ]);
-//       } catch (e) {
-//         console.log("error persisting data");
-//       }
-//     };
-
-//     if (dataLoaded) {
-//       persist();
-//     }
-//   }, [timeWhenLastStopped, isRunning, startTime, laps, dataLoaded]);
-
-//   useEffect(() => {
-//     if (startTime > 0) {
-//       interval.current = setInterval(() => {
-//         setTime(() => Date.now() - startTime + timeWhenLastStopped);
-//       }, 1);
-//     } else {
-//       if (interval.current) {
-//         clearInterval(interval.current);
-//         interval.current = undefined;
-//       }
-//     }
-//   }, [startTime]);
-
-//   const start = () => {
-//     setIsRunning(true);
-//     setStartTime(Date.now());
-//   };
-
-//   const stop = () => {
-//     setIsRunning(false);
-//     setStartTime(0);
-//     setTimeWhenLastStopped(time);
-//   };
-
-//   const reset = () => {
-//     setIsRunning(false);
-//     setStartTime(0);
-//     setTimeWhenLastStopped(0);
-//     setTime(0);
-//     setLaps([]);
-//   };
-
-//   const lap = () => {
-//     setLaps((laps) => [time, ...laps]);
-//   };
-
-//   let slowestLapTime;
-//   let fastestLapTime;
-
-//   const formattedLapData= laps.map((l, index) => {
-//     const previousLap = laps[index + 1] || 0;
-//     const lapTime = l - previousLap;
-
-//     if (!slowestLapTime || lapTime > slowestLapTime) {
-//       slowestLapTime = lapTime;
-//     }
-
-//     if (!fastestLapTime || lapTime < fastestLapTime) {
-//       fastestLapTime = lapTime;
-//     }
-
-//     return {
-//       time: formatMs(lapTime),
-//       lap: laps.length - index,
-//     };
-//   });
-
-//   return {
-//     start,
-//     stop,
-//     reset,
-//     lap,
-
-//     isRunning,
-//     time: formatMs(time),
-
-//     laps: formattedLapData,
-//     currentLapTime: laps[0] ? formatMs(time - laps[0]) : formatMs(time),
-//     hasStarted: time > 0,
-//     slowestLapTime: formatMs(slowestLapTime || 0),
-//     fastestLapTime: formatMs(fastestLapTime || 0),
-
-//     dataLoaded,
-//   };
-// };

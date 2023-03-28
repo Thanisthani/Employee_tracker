@@ -8,7 +8,7 @@ const initialState = {
 
 // slice
 export const geoSlice = createSlice({
-    name: 'auth',
+    name: 'geo',
     initialState,
     reducers: {
         geoEnter: (state) => {

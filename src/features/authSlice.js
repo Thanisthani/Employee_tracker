@@ -3,7 +3,8 @@ import { auth } from '../../firebase';
 import { signInWithEmailAndPassword, onAuthStateChanged } from "firebase/auth";
 
 const initialState = {
-    isAuthenticated: false
+    isAuthenticated: false,
+    isLoading:false
   };
 
 // login user
@@ -55,6 +56,12 @@ export const authSlice = createSlice({
         },
         logout: (state) => {
             state.isAuthenticated = false
+        },
+        loadingStart: (state) => {
+            state.isLoading = true;
+        },
+        loadingStop: (state) => {
+            state.isLoading = true;
         }
     },
     extraReducers: (builder) => {
@@ -75,5 +82,5 @@ export const authSlice = createSlice({
     }
 });
 
-export const { loginSuccess,loginFailed, logout } = authSlice.actions
+export const { loginSuccess,loginFailed, logout,loadingStart,loadingStop } = authSlice.actions
 export default authSlice.reducer;

@@ -1,12 +1,15 @@
 import React from 'react'
-import { StyleSheet, Text, View, Image } from 'react-native';
+import { ScrollView } from 'react-native';
+import { StyleSheet,  View, Image ,StatusBar} from 'react-native';
 import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
 import LoginForm from '../Components/Login/LoginForm';
 const LoginScreen = () =>{
-    return (
+  return (
+   
+    <ScrollView  >
       <View style={styles.container}>
         <View style={styles.logoWrapper}>
           <Image style={styles.logoImg} source={require('../../assets/images/LoginLogo.png')} />
@@ -16,8 +19,10 @@ const LoginScreen = () =>{
           <LoginForm />
         </View>
         
-        
-      </View>
+        </View>
+      </ScrollView>
+   
+   
    
   )
 }
@@ -27,24 +32,29 @@ const styles = StyleSheet.create({
       flex: 1,
       backgroundColor: '#FFFFFF',
       alignItems: 'center',
-      justifyContent: 'center'
-    },
-    logoImg: {
-        width:wp('60%'),
-        // height: hp('30%'),
-        resizeMode:'contain'
+    justifyContent: 'center',
+      height:hp('100%')+ StatusBar.currentHeight
+  },
+  containers: {
+    flex: 1,
+    alignItems: 'center'
+  },
+  logoImg: {
+    width: wp('60%'),
+    resizeMode: 'contain'
   },
   logoWrapper: {
-    flex: 1,
+    flex: 2,
     alignItems: "center",
     justifyContent: 'flex-start',
-    backgroundColor: '#FFFFFF'
+    backgroundColor: '#FFFFFF',
+    
   },
   formWrapper: {
-    flex: 2,
+    flex: 3,
     alignItems: 'flex-start',
     justifyContent: 'flex-start',
-    paddingTop: hp('5%'),
+    paddingTop: hp('0%'),
     backgroundColor: '#FFFFFF'
     
   }

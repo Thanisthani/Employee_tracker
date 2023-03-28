@@ -9,7 +9,6 @@ import {
 import { PrimaryColor } from '../../constants/Color';
 import * as Location from 'expo-location';
 import {isEnter } from '../../services/storage';
-// import { Stopwatch} from 'react-native-stopwatch-timer';
 import { getSite, locationUpdate } from '../../services/track';
 import {useStopWatch} from '../../hooks/useStopWatch';
 import { doc, updateDoc } from 'firebase/firestore';
@@ -41,10 +40,9 @@ const GeoFencing = ({userID}) =>
     if (foreground.granted)
     {
       const background = await Location.requestBackgroundPermissionsAsync();
-      console.log('permission grantted')
       if (!background.granted)
       {
-        console.log('Permission to access location was denied');
+        console.log('Permission to  access location was denied');
       }
     }
     else
@@ -85,27 +83,30 @@ const GeoFencing = ({userID}) =>
   useEffect(() => {
     const interval = setInterval(async () =>
     {
-      await console.log('timer trigger ' ,isRunning);
+      // await console.log('timer trigger ' ,isRunning);
       const geoEnter = await isEnter();
-      // const { isRunning } = await useStopWatch();
+
       if (geoEnter == 'inside')
       {
+        const geoSite = getSite(); 
+        setSiteName(geoSite);
+        console.log('site name',geoSite)
+        // console.log('site',geoSite)
         if (!isRunning)
         {
-          console.log('start timer')
+          // console.log('start timer')
           start();
           currentStatus(Date.now(), null);
-          const geoSite = getSite(); 
-          setSiteName(geoSite);
+         
         }
       }
       else
       {
-        console.log('false on  timer');
+        // console.log('false on  timer');
       
         if (isRunning)
         {
-          console.log('stop on timer')
+          // console.log('stop on timer')
           stop();
           currentStatus(null, Date.now());
         }
@@ -116,9 +117,9 @@ const GeoFencing = ({userID}) =>
   }, [isRunning]);
 
   // check timer value
-  // if (!dataLoaded) {
-  //   return null;
-  // }
+  if (!dataLoaded) {
+    return null;
+  }
   
   return (
       <View style={styles.timerBox}>
@@ -167,8 +168,8 @@ const styles = StyleSheet.create({
       bottomWrap: {
         flexDirection: 'row',
         alignItems:'baseline'
-        // justifyContent:'space-around'
-    }
+  }
+    
 });
 
 export default GeoFencing;

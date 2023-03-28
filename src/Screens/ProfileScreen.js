@@ -19,23 +19,31 @@ const ProfileScreen = () => {
     dataLoaded
     } = useStopWatch();
     
-    // const dispatch = useDispatch();
+    const dispatch = useDispatch();
 
     // // sign out
-    // const handleSignOut = () => {
-    //  signOut(auth).then(() => {
-    //    console.log("User sign out");
-    //    dispatch(logout());
-    //  }).catch((error) => {
-    //      console.log(error)
-    //  })
-//  }
+    const handleSignOut = () => {
+     signOut(auth).then(() => {
+       console.log("User sign out");
+       dispatch(logout());
+     }).catch((error) => {
+         console.log(error)
+     })
+        
+        
+     const moment = require('moment');
+
+     function myFunction() {
+       // Your function logic here
+       console.log("Function called at " + moment().format("YYYY-MM-DD HH:mm:ss"));
+     }
+ }
     return (
         <View style= {styles.container}>
             <Text>ProfileScreen</Text>
-            {/* <TouchableOpacity style={{ backgroundColor: 'blue', padding: 10 }} onPress={handleSignOut}>
-                <Text>Sign Out</Text>
-            </TouchableOpacity> */}
+            <TouchableOpacity style={styles.btn} onPress={handleSignOut}>
+                <Text style={styles.btnText}>Sign Out</Text>
+            </TouchableOpacity>
             <View>
                 <Text style={styles.timer}>{time}</Text>
 
@@ -70,8 +78,8 @@ const styles = StyleSheet.create({
         backgroundColor: PrimaryColor,
         padding: 5,
         marginBottom: 30,
-        width: '30%',
-        height:'20%'
+        width: '20%',
+        height:'10%'
        
     },
     btnText: {

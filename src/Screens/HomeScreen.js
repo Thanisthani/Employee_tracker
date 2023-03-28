@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import { StatusBar, StyleSheet, Text, View } from 'react-native';
+import { ActivityIndicator, StatusBar, StyleSheet, Text, View } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -10,13 +10,17 @@ import GeoFencing from '../Components/Home/GeoFencing';
 import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebase';
 import ActivityDetails from '../Components/Home/ActivityDetails';
+import { useSelector } from 'react-redux';
 
 const HomeScreen = () => {
   const [currentUser, setCurrentUser] = useState(null);
+    // redux state
+    const check = useSelector((state) => state.auth);
 
   const userHandler =async (user) => {
    try {
-      user ? await setCurrentUser(user) : setCurrentUser(null);
+     user ? await setCurrentUser(user) : setCurrentUser(null);
+    
     }
     catch (error)
     {
@@ -25,22 +29,31 @@ const HomeScreen = () => {
   }
  
 
-  useEffect(() =>
+  useEffect(() =>{
     onAuthStateChanged(auth, user => {
       userHandler(user.uid);
     })
-    , []);
+    console.log('loading', check)
+  }
+    , [check]);
 
   return (
     <View style={styles.container}>
       <Text style={styles.mainHeading}>Summary</Text>
       {/* Timer */}
+      {currentUser && 
+      <GeoFencing userID={currentUser}/> 
+      }
       
-      
+      {/* {check.isLoading ?
+        <View style={styles.loader}>
+          <ActivityIndicator color='#032F41' size="large" />
+        </View>
+        :
+      <> */}
       {/* Activity details */}
       {currentUser &&
         <>
-        <GeoFencing userID={currentUser} />
         <ActivityDetails userID={currentUser} />
         </>
       }
@@ -60,7 +73,9 @@ const HomeScreen = () => {
           <Text style={styles.timeLog}>38 hours 35 minutes</Text>
         </View>
         
-      </View>
+        </View>
+        {/* </>
+} */}
     </View>
    
   )
@@ -133,6 +148,10 @@ const styles = StyleSheet.create({
     height: 0.39,
     backgroundColor: '#043d54',
     alignSelf:'center'
+  },
+  loader: {
+    justifyContent: 'center',
+    alignItems:'center'
   }
 });
 

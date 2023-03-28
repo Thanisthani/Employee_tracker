@@ -15,7 +15,6 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
     console.log(error, 'IN task manager');
     return;
   };
-  // console.log('[tracking]', 'Received new locations', locations[0].coords );
   
   try
   {

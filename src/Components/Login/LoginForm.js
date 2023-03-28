@@ -14,10 +14,13 @@ import { signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from '../../../firebase';
 import { setGeoCoords } from '../../services/storage';
 import { collection, onSnapshot } from '@firebase/firestore';
+import AnimatedEllipsis from 'react-native-animated-ellipsis';
+
   
 const LoginForm = () => {
     const dispatch = useDispatch();
     const [loginError, setLoginError] = useState(null);
+    const [loading, setLoading] = useState(false);
      // redux state
   const authUser = useSelector((state) => state.auth);
 
@@ -28,7 +31,8 @@ const LoginForm = () => {
 
     // handle form submit
     const userSignin = async (values) => {
-        signInWithEmailAndPassword(auth, values.email, values.password)
+       setLoading(true);
+       await signInWithEmailAndPassword(auth, values.email, values.password)
             .then(async (re) => {
                 console.log("Sucessfully log in ");
 
@@ -39,18 +43,22 @@ const LoginForm = () => {
                 setLoginError(null);
 
                 await dispatch(loginSuccess());
+                setLoading(false);
             })
             .catch((re) => {
                 console.log(re + "hi");
+                setLoading(false);
                 const message = "Please check your email & password !";
                 dispatch(loginFailed());
                 setLoginError(message);
        
             });
+        
     }
 
   return (
-      <View style={styles.wrapper}>
+     
+          <View style={styles.wrapper}>
               <Formik
                     initialValues={{ email: '',password:'' }}
                     onSubmit={values => userSignin(values)}
@@ -104,17 +112,19 @@ const LoginForm = () => {
                           <Text style={styles.errorText}>{loginError}</Text>
                       </View>}
 
-                        </View>
-
+                      <View style={styles.loadingContainer}>
+                          {loading && <AnimatedEllipsis  style={styles.loadingText} />}
+                      </View>
+                    
+                  </View>
                     )}
-                </Formik>
-    </View>
-  )
+          </Formik>
+      </View>
+    )
 }
 
 const styles = StyleSheet.create({
     wrapper: {
-        // justifyContent:'flex-',
         alignItems:"flex-start"
     },
     label: {
@@ -160,6 +170,13 @@ const styles = StyleSheet.create({
     loginErr: {
         alignItems: 'center',
         paddingTop:10
+    },
+    loadingContainer: {
+        alignItems:'center'
+    },
+    loadingText: {
+        color: '#032F41',
+        fontSize: 100
     }
 
 });
