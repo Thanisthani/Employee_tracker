@@ -7,16 +7,22 @@ import {
   import { RFPercentage } from 'react-native-responsive-fontsize';
 import { PrimaryColor } from '../../constants/Color';
 import { db } from '../../../firebase';
-import { collection, doc, onSnapshot } from 'firebase/firestore';
+import { doc, onSnapshot } from 'firebase/firestore';
+import { useDispatch } from 'react-redux';
+import { loadingStart, loadingStop } from '../../features/authSlice';
+
+const TRIGGER_TASK = 'trigger';
 
 const ActivityDetails = ({userID}) => {
   const [currentStatus, setCurrentStatus] = useState();
   const [checkIn, setCheckIn] = useState();
   const [checkOut, setCheckout] = useState(null);
 
+  const dispatch = useDispatch();
 
     const getStatusTime =async () => {
       try {
+       await dispatch(loadingStart());
         const ref = await doc(db, "Employees", userID);
             
         await onSnapshot(ref, (snapshot) => {
@@ -65,6 +71,7 @@ const ActivityDetails = ({userID}) => {
         else {
           setCheckout(null);
         }
+        await dispatch(loadingStop());
       }
     }
     catch (error)
@@ -85,25 +92,23 @@ const ActivityDetails = ({userID}) => {
 
   return (
       <>
-       <Text style={styles.actText}>Activity Details</Text>
+      <Text style={styles.actText}>Activity Details</Text>
 
-<View style= {styles.actBox}>
-  <View style={styles.timeBox}>
-    <Text style={styles.label}>In time</Text>
-          <Text style={styles.timeText}>{ checkIn?checkIn:'00:00'}</Text>
-  </View>
-  {/* vertical line */}
-  <View style={styles.verticalLine}></View>
+      <View style={styles.actBox}>
+        <View style={styles.timeBox}>
+          <Text style={styles.label}>In time</Text>
+          <Text style={styles.timeText}>{checkIn ? checkIn : '00:00'}</Text>
+        </View>
 
-  <View style={styles.timeBox}>
-    <Text style={styles.label}>Out time</Text>
-          <Text style={styles.timeText}>{ checkOut? checkOut : '00:00'}</Text>
-  </View>
+        {/* vertical line */}
+        <View style={styles.verticalLine}></View>
+        <View style={styles.timeBox}>
+          <Text style={styles.label}>Out time</Text>
+          <Text style={styles.timeText}>{checkOut ? checkOut : '00:00'}</Text>
+        </View>
   
-</View>
-
-      
-      </>
+      </View>
+    </>
   )
 }
 
@@ -124,9 +129,8 @@ const styles = StyleSheet.create({
         
       },
       timeBox: {
-        // flex: 1,
-        // justifyContent: 'center'
-        // alignItems:''
+        justifyContent: 'center',
+        alignItems:'center'
       },
       label: {
         fontFamily: 'Poppins_400Regular',
