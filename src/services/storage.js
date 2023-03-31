@@ -3,7 +3,8 @@ import { useDispatch, useSelector } from 'react-redux';
 
 
 const geofenceStorageName = 'geo';
-const geoCoordinates= 'geoCoord'
+const geoCoordinates = 'geoCoord';
+const statusStorage = 'status'
 
 // Get value in local storage
 export  async function isEnter () {
@@ -43,6 +44,15 @@ export async function getGeoCoords()
   return data ? JSON.parse(data) : [];
 }
   
+export async function setIsStartStorage(start) {
+  await AsyncStorage.setItem(statusStorage, start.toString());
+}
+
+export async function getIsStart() {
+  const data = await AsyncStorage.getItem(statusStorage);
+
+  return data;
+}
 // store on redux
 
 // export const getStatus = async () => {

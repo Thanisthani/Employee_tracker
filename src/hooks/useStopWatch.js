@@ -137,6 +137,7 @@ export function  useStopWatch()
     reset,
     isRunning,
     time: formatMs(time),
-    dataLoaded
+    dataLoaded,
+    actualTime:time
   };
 };

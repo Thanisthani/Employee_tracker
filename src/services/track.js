@@ -30,7 +30,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
        // Store geofence status on local storage
     if (status)
     {
-      console.log('Status of geofence true');
+      console.log('Status of  geofence true');
       setIsEnter('inside');
       siteName = coords.name;
       break;
@@ -80,6 +80,15 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
       showsBackgroundLocationIndicator: true,
     });
     console.log('[tracking]', 'started background location task');
+}
+
+//  stop geofence
+
+export const stopLocationUpdate = async () => {
+  
+  // await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
+  await TaskManager.unregisterTaskAsync(LOCATION_TASK_NAME);
+  console.log('BG task stoped');
 }
   
 // get site name

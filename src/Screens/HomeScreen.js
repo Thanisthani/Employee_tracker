@@ -13,29 +13,7 @@ import ActivityDetails from '../Components/Home/ActivityDetails';
 import { useSelector } from 'react-redux';
 
 const HomeScreen = () => {
-  const [currentUser, setCurrentUser] = useState(null);
-    // redux state
-    const check = useSelector((state) => state.auth);
-
-  const userHandler =async (user) => {
-   try {
-     user ? await setCurrentUser(user) : setCurrentUser(null);
-    
-    }
-    catch (error)
-    {
-      console.log('error on home', error)
-    }
-  }
- 
-
-  useEffect(() =>{
-    onAuthStateChanged(auth, user => {
-      userHandler(user.uid);
-    })
-    console.log('loading', check)
-  }
-    , [check]);
+  const [currentUser, setCurrentUser] = useState(auth.currentUser.uid? auth.currentUser.uid : null);
 
   return (
     <View style={styles.container}>
@@ -44,13 +22,7 @@ const HomeScreen = () => {
       {currentUser && 
       <GeoFencing userID={currentUser}/> 
       }
-      
-      {/* {check.isLoading ?
-        <View style={styles.loader}>
-          <ActivityIndicator color='#032F41' size="large" />
-        </View>
-        :
-      <> */}
+    
       {/* Activity details */}
       {currentUser &&
         <>
@@ -58,24 +30,6 @@ const HomeScreen = () => {
         </>
       }
 
-      {/* summary */}
-      <View style={styles.summaryBox}>
-        <View>
-          <Text style={styles.subHeading}>Last Session:</Text>
-          <Text style={styles.timeLog}>07 hours 35 minutes</Text>
-        </View>
-
-        {/* horizontal line */}
-
-        <View style={styles.horizontalLine}></View>
-        <View>
-          <Text style={styles.subHeading}>Week Total:</Text>
-          <Text style={styles.timeLog}>38 hours 35 minutes</Text>
-        </View>
-        
-        </View>
-        {/* </>
-} */}
     </View>
    
   )
@@ -126,28 +80,6 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     alignItems:'baseline'
     // justifyContent:'space-around'
-  },
-
-  summaryBox: {
-    marginTop:hp('3%'),
-    backgroundColor: PrimaryColor,
-    width: wp('90%'),
-    height: hp('28%'),
-    borderRadius: hp('1.5%'),
-    paddingVertical: hp('2%'),
-    paddingHorizontal: wp('8%'),
-    justifyContent:'space-between'
-  },
-  timeLog: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: RFPercentage(3.5),
-    color:'#ffffff'
-  },
-  horizontalLine: {
-    width: '90%',
-    height: 0.39,
-    backgroundColor: '#043d54',
-    alignSelf:'center'
   },
   loader: {
     justifyContent: 'center',

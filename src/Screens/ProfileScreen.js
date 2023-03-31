@@ -47,15 +47,15 @@ const ProfileScreen = () => {
             <View>
                 <Text style={styles.timer}>{time}</Text>
 
-                <TouchableOpacity onPress={() =>start()} style={styles.btn}>
+                <TouchableOpacity onPress={start} style={styles.btn}>
                     <Text style={styles.btnText}>Start</Text>
                 </TouchableOpacity>
                 
-                <TouchableOpacity onPress={()=>stop()} style={styles.btn}>
+                <TouchableOpacity onPress={stop} style={styles.btn}>
                     <Text style={styles.btnText}>Stop</Text>
                 </TouchableOpacity>
                 
-                <TouchableOpacity onPress={()=>reset()} style={styles.btn}>
+                <TouchableOpacity onPress={reset} style={styles.btn}>
                     <Text style={styles.btnText}>Reset</Text>
                 </TouchableOpacity>
                 

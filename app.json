@@ -2,7 +2,7 @@
   "expo": {
     "name": "Employee_tracker",
     "slug": "Employee_tracker",
-    "version": "1.2.2",
+    "version": "1.2.3",
     "orientation": "portrait",
     "icon": "./assets/icon.png",
     "userInterfaceStyle": "light",
@@ -31,7 +31,9 @@
       "permissions": [
         "ACCESS_FINE_LOCATION",
         "ACCESS_BACKGROUND_LOCATION",
-        "FOREGROUND_SERVICE"
+        "FOREGROUND_SERVICE",
+        "RECEIVE_BOOT_COMPLETED",
+        "WAKE_LOCK"
       ],
       "package": "com.thanistas.Employee_tracker"
     },

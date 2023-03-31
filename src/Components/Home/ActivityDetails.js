@@ -10,8 +10,7 @@ import { db } from '../../../firebase';
 import { doc, onSnapshot } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
 import { loadingStart, loadingStop } from '../../features/authSlice';
-
-const TRIGGER_TASK = 'trigger';
+import * as BackgroundFetch from 'expo-background-fetch';
 
 const ActivityDetails = ({userID}) => {
   const [currentStatus, setCurrentStatus] = useState();
@@ -81,8 +80,9 @@ const ActivityDetails = ({userID}) => {
 
   }
 
+
     useEffect(() => {
-        getStatusTime();
+      getStatusTime();
     }, []);
   
   useEffect(() => {
@@ -108,6 +108,23 @@ const ActivityDetails = ({userID}) => {
         </View>
   
       </View>
+
+       {/* summary */}
+       <View style={styles.summaryBox}>
+        <View>
+          <Text style={styles.subHeading}>Last Session:</Text>
+          <Text style={styles.timeLog}>07 hours 35 minutes</Text>
+        </View>
+
+        {/* horizontal line */}
+
+        <View style={styles.horizontalLine}></View>
+        <View>
+          <Text style={styles.subHeading}>Week Total:</Text>
+          <Text style={styles.timeLog}>38 hours 35 minutes</Text>
+        </View>
+        
+        </View>
     </>
   )
 }
@@ -146,6 +163,32 @@ const styles = StyleSheet.create({
         width: 0.5,
         height: '100%',
         backgroundColor:'#636363'
-      },
+  },
+  subHeading: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: RFPercentage(2.5),
+    color:'#c1c1c1'
+  },
+  summaryBox: {
+    marginTop:hp('3%'),
+    backgroundColor: PrimaryColor,
+    width: wp('90%'),
+    height: hp('28%'),
+    borderRadius: hp('1.5%'),
+    paddingVertical: hp('2%'),
+    paddingHorizontal: wp('8%'),
+    justifyContent:'space-between'
+  },
+  timeLog: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: RFPercentage(3.5),
+    color:'#ffffff'
+  },
+  horizontalLine: {
+    width: '90%',
+    height: 0.39,
+    backgroundColor: '#043d54',
+    alignSelf:'center'
+  },
 });
 export default ActivityDetails
