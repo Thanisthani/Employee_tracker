@@ -123,12 +123,12 @@ export function  useStopWatch()
   };
 
   // reset timer
-  const reset = () =>
+  const reset = async () =>
   {
     setIsRunning(false);
+    setTime(0);
     setStartTime(0);
     setTimeWhenLastStopped(0);
-    setTime(0);
   };
 
   return {

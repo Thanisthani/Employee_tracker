@@ -7,15 +7,21 @@ import {
   import { RFPercentage } from 'react-native-responsive-fontsize';
 import { PrimaryColor } from '../../constants/Color';
 import { db } from '../../../firebase';
-import { doc, onSnapshot } from 'firebase/firestore';
+import { collection, doc, onSnapshot, query, where } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
 import { loadingStart, loadingStop } from '../../features/authSlice';
-import * as BackgroundFetch from 'expo-background-fetch';
+import Moment from 'moment';
+
 
 const ActivityDetails = ({userID}) => {
   const [currentStatus, setCurrentStatus] = useState();
   const [checkIn, setCheckIn] = useState();
   const [checkOut, setCheckout] = useState(null);
+  const [last, setLast] = useState();
+  const [workLog, setWorkLog] = useState(null);
+
+  const date = new Date()
+  const yesterday = Moment(date).subtract(1, 'day').format('YYYY-MM-DD'); 
 
   const dispatch = useDispatch();
 
@@ -80,10 +86,45 @@ const ActivityDetails = ({userID}) => {
 
   }
 
+  // Get yesterday duration
+
+  const getYesterdayLog = async () => {
+    
+    const ref = await collection(db, "Employees", userID, "Working_hours")
+    const q = await query(ref,where("Date", "==", yesterday))
+   await  onSnapshot(q, (snapshot) =>
+      setLast((snapshot.docs.map((log) => ({ id: log.id, ...log.data() }))))
+    )
+  }
+
+  // fromat last session
+  const getLogDuration = async () => {
+    try {
+      if (last)
+      {
+      const timeStamp = await new Date(last[0].Duration);
+      let minutes = await timeStamp.getMinutes();
+      let hours = await timeStamp.getHours();
+      const str = `${padStart(hours)} hours ${padStart(minutes)} minutes`;
+      setWorkLog(str);
+    }
+    }
+    catch (error)
+    {
+      console.log("getLogDuration ",error)
+    }
+  }
+  
+
 
     useEffect(() => {
       getStatusTime();
+      getYesterdayLog();
     }, []);
+  
+  useEffect(() => {
+    getLogDuration();
+  },[last])
   
   useEffect(() => {
     storeTime();
@@ -111,15 +152,18 @@ const ActivityDetails = ({userID}) => {
 
        {/* summary */}
        <View style={styles.summaryBox}>
-        <View>
+        <View style={styles.timeLogWrapper}>
           <Text style={styles.subHeading}>Last Session:</Text>
-          <Text style={styles.timeLog}>07 hours 35 minutes</Text>
+          {workLog ? <Text style={styles.timeLog}>{ workLog}</Text>
+            :
+            <Text style={styles.timeLog}>00 hours 00 minutes</Text>
+          }
         </View>
 
         {/* horizontal line */}
 
         <View style={styles.horizontalLine}></View>
-        <View>
+        <View style={styles.timeLogWrapper}>
           <Text style={styles.subHeading}>Week Total:</Text>
           <Text style={styles.timeLog}>38 hours 35 minutes</Text>
         </View>
@@ -181,7 +225,7 @@ const styles = StyleSheet.create({
   },
   timeLog: {
     fontFamily: 'Poppins_600SemiBold',
-    fontSize: RFPercentage(3.5),
+    fontSize: RFPercentage(3),
     color:'#ffffff'
   },
   horizontalLine: {
@@ -190,5 +234,9 @@ const styles = StyleSheet.create({
     backgroundColor: '#043d54',
     alignSelf:'center'
   },
+  timeLogWrapper: {
+    justifyContent: 'space-evenly',
+    flex:1
+  }
 });
 export default ActivityDetails

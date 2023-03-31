@@ -27,13 +27,13 @@ export  async function isEnter () {
 // Set value in local storage
 export async function setIsEnter(enter){
   await AsyncStorage.setItem(geofenceStorageName, enter);
-  const data = await AsyncStorage.getItem(geofenceStorageName)
+  // const data = await AsyncStorage.getItem(geofenceStorageName)
   // console.log('async local set data',data)
 }
 
 // set coordinates in local storage
 export async function setGeoCoords(coords) {
-  console.log("Set geo coordinates", coords);
+  // console.log("Set geo coordinates", coords);
   await AsyncStorage.removeItem(geoCoordinates);
   await AsyncStorage.setItem(geoCoordinates, JSON.stringify(coords));
 }

@@ -66,6 +66,9 @@ const GeoFencing = ({userID}) =>
     setIsStart(false);
     await reset();
     await uploadWrokLog();
+    if (isRunning) {
+      await currentStatus(null, Date.now());
+    }
   }
 
   // Upload working hours
@@ -123,7 +126,7 @@ const GeoFencing = ({userID}) =>
     if (isStart)
     {
       const interval = setInterval(async () => {
-        await console.log('timer trigger ', isRunning);
+        // await console.log('timer trigger ', isRunning);
         const geoEnter = await isEnter();
 
         if (geoEnter == 'inside') {

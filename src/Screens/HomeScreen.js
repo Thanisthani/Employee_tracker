@@ -1,5 +1,5 @@
-import React, { useEffect, useState } from 'react'
-import { ActivityIndicator, StatusBar, StyleSheet, Text, View } from 'react-native';
+import React, { useState } from 'react'
+import {StatusBar, StyleSheet, Text, View } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -7,10 +7,8 @@ import {
 import { RFPercentage } from 'react-native-responsive-fontsize';
 import { PrimaryColor, TextPrimaryColor } from '../constants/Color';
 import GeoFencing from '../Components/Home/GeoFencing';
-import { onAuthStateChanged } from 'firebase/auth';
 import { auth } from '../../firebase';
 import ActivityDetails from '../Components/Home/ActivityDetails';
-import { useSelector } from 'react-redux';
 
 const HomeScreen = () => {
   const [currentUser, setCurrentUser] = useState(auth.currentUser.uid? auth.currentUser.uid : null);
