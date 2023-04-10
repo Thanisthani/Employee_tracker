@@ -132,7 +132,6 @@ const GeoFencing = ({userID}) =>
         if (geoEnter == 'inside') {
           const geoSite = getSite();
           setSiteName(geoSite);
-          console.log('site',geoSite)
           if (!isRunning) {
             // console.log('start timer')
             start();

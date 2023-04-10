@@ -21,7 +21,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
     // Check point whether it's inside geofence or not
     for (coords of coordinates)
     {
-      console.log('coords name', coords.name);
+      // console.log('coords name', coords.name);
       const status= isPointWithinRadius(
         { latitude: locations[0].coords.latitude, longitude: locations[0].coords.longitude },
         { latitude: coords.latitude, longitude: coords.longitude }, 
@@ -30,14 +30,14 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
        // Store geofence status on local storage
     if (status)
     {
-      console.log('Status of  geofence true');
+      // console.log('Status of  geofence true');
       setIsEnter('inside');
       siteName = coords.name;
       break;
     }
     else
     {
-      console.log('Status of geofence false');
+      // console.log('Status of geofence false');
       setIsEnter('outside')
     }
     }
@@ -79,7 +79,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
       activityType: Location.ActivityType.Fitness,
       showsBackgroundLocationIndicator: true,
     });
-    console.log('[tracking]', 'started background location task');
+    // console.log('[tracking]', 'started background location task');
 }
 
 //  stop geofence
@@ -88,7 +88,7 @@ export const stopLocationUpdate = async () => {
   
   // await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
   await TaskManager.unregisterTaskAsync(LOCATION_TASK_NAME);
-  console.log('BG task stoped');
+  // console.log('BG task stoped');
 }
   
 // get site name

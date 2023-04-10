@@ -45,43 +45,6 @@ const styles = StyleSheet.create({
     fontFamily:'Poppins_600SemiBold',
     fontSize:RFPercentage(5),
     color:TextPrimaryColor
-  },
-  timerBox: {
-    marginTop:hp('2%'),
-    backgroundColor: PrimaryColor,
-    width: wp('90%'),
-    height: hp('22%'),
-    borderRadius: hp('1.5%'),
-    padding: hp('2%'),
-    justifyContent:'space-between'
-  },
-  subHeading: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: RFPercentage(2.5),
-    color:'#c1c1c1'
-  },
-  locationText: {
-    fontFamily: 'Poppins_400Regular',
-    fontSize: RFPercentage(2.8),
-    color:'#c1c1c1'
-  },
-  timerWrapper: {
-    alignItems: 'center',
-    justifyContent:'center'
-  },
-  timer: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: RFPercentage(6),
-    color:'#ffffff'
-  },
-  bottomWrap: {
-    flexDirection: 'row',
-    alignItems:'baseline'
-    // justifyContent:'space-around'
-  },
-  loader: {
-    justifyContent: 'center',
-    alignItems:'center'
   }
 });
 

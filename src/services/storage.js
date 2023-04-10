@@ -1,5 +1,4 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
-import { useDispatch, useSelector } from 'react-redux';
 
 
 const geofenceStorageName = 'geo';
@@ -53,23 +52,3 @@ export async function getIsStart() {
 
   return data;
 }
-// store on redux
-
-// export const getStatus = async () => {
-
-//   const geoFence = useSelector((state) => state.geo);
-
-//   return geoFence.isEnter;
-// }
-
-// export const setStatus = async (status)=>{
-//   const dispatch = useDispatch(); 
-//   if (status == 'true')
-//   {
-//     dispatch(geoEnter());
-//   }
-//   else {
-//     dispatch(geoNotEnter());
-//   }
-
-// }

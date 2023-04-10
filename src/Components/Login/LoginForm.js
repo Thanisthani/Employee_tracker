@@ -34,7 +34,7 @@ const LoginForm = () => {
        setLoading(true);
        await signInWithEmailAndPassword(auth, values.email, values.password)
             .then(async (re) => {
-                console.log("Sucessfully log in ");
+                // console.log("Sucessfully log in ");
 
                 const sites = await collection(db, 'Sites');
                 await onSnapshot(sites, (snapshot) => {

@@ -3,6 +3,7 @@ import { createBottomTabNavigator } from '@react-navigation/bottom-tabs';
 import { Octicons,FontAwesome5,Ionicons } from '@expo/vector-icons';
 import HomeScreen from './HomeScreen';
 import ProfileScreen from './ProfileScreen';
+import NotificationScreen from './NotificationScreen'
 import { StyleSheet, View } from 'react-native';
 import {
     widthPercentageToDP as wp,
@@ -36,7 +37,7 @@ const BottomNavigation = () => {
               )
           }} />
 
-<Tab.Screen name="Profilef" component={ProfileScreen} options={{ 
+<Tab.Screen name="Notification" component={NotificationScreen} options={{ 
               tabBarIcon: ({ color, size, focused }) => (
         <View style={styles.iconWrapper}>
             <Octicons name="bell" size={RFPercentage(4)} color={focused ? "#032F41" : "#979C9E"} />
