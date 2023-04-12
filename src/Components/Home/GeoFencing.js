@@ -14,11 +14,24 @@ import {useStopWatch} from '../../hooks/useStopWatch';
 import { collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import Moment from 'moment';
+import * as BackgroundFetch from 'expo-background-fetch';
+import * as TaskManager from 'expo-task-manager';
 
+const TIMMER_TASK_NAME = "Timmer";
+TaskManager.defineTask(TIMMER_TASK_NAME, async () => {
+  const now = Date.now();
+
+  console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
+
+  // Be sure to return the successful result type!
+  return BackgroundFetch.BackgroundFetchResult.NewData;
+});
 
 // Main component
 const GeoFencing = ({userID}) =>
 {
+
+
   
   // stop watch hook
   const {
@@ -54,7 +67,13 @@ const GeoFencing = ({userID}) =>
     }
 
     // Geofence function
-    await locationUpdate();
+    // await locationUpdate();
+    // timmer check on background
+    await BackgroundFetch.registerTaskAsync(TIMMER_TASK_NAME, {
+      minimumInterval: 60 * 1, // 15 minutes
+      stopOnTerminate: false, // android only,
+      startOnBoot: true, // android only
+    });
     setIsStart(true);
   }
 
@@ -62,10 +81,11 @@ const GeoFencing = ({userID}) =>
 
   const stopGeo = async () =>
   {
-    await stopLocationUpdate();
+    // await stopLocationUpdate();
     setIsStart(false);
     await reset();
     await uploadWrokLog();
+    await  BackgroundFetch.unregisterTaskAsync(TIMMER_TASK_NAME);
     if (isRunning) {
       await currentStatus(null, Date.now());
     }
@@ -85,7 +105,7 @@ const GeoFencing = ({userID}) =>
         console.log("upload wrok log")
     })
 
-    }
+  }
 
   // Current status function
 

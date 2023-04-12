@@ -14,13 +14,22 @@
     "assetBundlePatterns": [
       "**/*"
     ],
+    "plugins": [
+      [
+        "expo-location",
+        {
+          "locationAlwaysAndWhenInUsePermission": "Allow $(PRODUCT_NAME) to use your location."
+        }
+      ]
+    ],
     "ios": {
       "supportsTablet": true,
       "infoPlist": {
         "UIBackgroundModes": [
           "location",
           "fetch"
-        ]
+        ],
+        "NSLocationAlwaysAndWhenInUseUsageDescription":"This uses location to track employee's location."
       }
     },
     "android": {
