@@ -29,7 +29,7 @@
           "location",
           "fetch"
         ],
-        "NSLocationAlwaysAndWhenInUseUsageDescription":"This uses location to track employee's location."
+        "NSLocationAlwaysAndWhenInUseUsageDescription":"This uses location to track employee's location"
       }
     },
     "android": {

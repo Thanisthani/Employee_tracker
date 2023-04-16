@@ -66,8 +66,10 @@ export function  useStopWatch()
         setDataLoaded(true);
       }
     };
-
-    loadData();
+    const interval = setInterval(async () => {
+      loadData();
+    }, 10 * 1000);
+    return () => clearInterval(interval);
   }, []);
 
   useEffect(() => {

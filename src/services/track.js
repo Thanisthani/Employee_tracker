@@ -1,7 +1,7 @@
 import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import { isPointWithinRadius } from 'geolib';
-import { getGeoCoords, setIsEnter } from './storage';
+import { checkTimer, getGeoCoords, setIsEnter, startTime, stopTime } from './storage';
 
 const LOCATION_TASK_NAME = "GEOFENCING";
 
@@ -9,15 +9,17 @@ let coordinates = [];
 let siteName = 'No site';
 
 // Bg task
-TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
+TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }) => {
   if (error)
   {
     console.log(error, 'IN task manager');
     return;
   };
   
+
   try
   {
+    const isRunning = await checkTimer();
     // Check point whether it's inside geofence or not
     for (coords of coordinates)
     {
@@ -31,6 +33,12 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
     if (status)
     {
       console.log('Status of  geofence true');
+     
+      if (!isRunning)
+      {
+        await startTime();
+        console.log('timmer start')
+        }
       setIsEnter('inside');
       siteName = coords.name;
       break;
@@ -38,7 +46,12 @@ TaskManager.defineTask(LOCATION_TASK_NAME, ({ data: { locations }, error }) => {
     else
     {
       console.log('Status of geofence false');
-      setIsEnter('outside')
+      setIsEnter('outside');
+      if (isRunning)
+      {
+        stopTime();
+        console.log('timmer stop')
+      }
     }
     }
  

@@ -17,15 +17,15 @@ import Moment from 'moment';
 import * as BackgroundFetch from 'expo-background-fetch';
 import * as TaskManager from 'expo-task-manager';
 
-const TIMMER_TASK_NAME = "Timmer";
-TaskManager.defineTask(TIMMER_TASK_NAME, async () => {
-  const now = Date.now();
+// const TIMMER_TASK_NAME = "Timmer";
+// TaskManager.defineTask(TIMMER_TASK_NAME, async () => {
+//   const now = Date.now();
 
-  console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
+//   console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
 
-  // Be sure to return the successful result type!
-  return BackgroundFetch.BackgroundFetchResult.NewData;
-});
+//   // Be sure to return the successful result type!
+//   return BackgroundFetch.BackgroundFetchResult.NewData;
+// });
 
 // Main component
 const GeoFencing = ({userID}) =>
@@ -67,13 +67,13 @@ const GeoFencing = ({userID}) =>
     }
 
     // Geofence function
-    // await locationUpdate();
+    await locationUpdate();
     // timmer check on background
-    await BackgroundFetch.registerTaskAsync(TIMMER_TASK_NAME, {
-      minimumInterval: 60 * 1, // 15 minutes
-      stopOnTerminate: false, // android only,
-      startOnBoot: true, // android only
-    });
+    // await BackgroundFetch.registerTaskAsync(TIMMER_TASK_NAME, {
+    //   minimumInterval: 60 * 1, // 15 minutes
+    //   stopOnTerminate: false, // android only,
+    //   startOnBoot: true, // android only
+    // });
     setIsStart(true);
   }
 
@@ -85,7 +85,7 @@ const GeoFencing = ({userID}) =>
     setIsStart(false);
     await reset();
     await uploadWrokLog();
-    await  BackgroundFetch.unregisterTaskAsync(TIMMER_TASK_NAME);
+    // await  BackgroundFetch.unregisterTaskAsync(TIMMER_TASK_NAME);
     if (isRunning) {
       await currentStatus(null, Date.now());
     }
@@ -141,39 +141,39 @@ const GeoFencing = ({userID}) =>
   }, [isStart]);
   
   // get status value from local storage
-  useEffect(() => {
-    // check user want to start geo fencing
-    if (isStart)
-    {
-      const interval = setInterval(async () => {
-        // await console.log('timer trigger ', isRunning);
-        const geoEnter = await isEnter();
+  // useEffect(() => {
+  //   // check user want to start geo fencing
+  //   if (isStart)
+  //   {
+  //     const interval = setInterval(async () => {
+  //       // await console.log('timer trigger ', isRunning);
+  //       const geoEnter = await isEnter();
 
-        if (geoEnter == 'inside') {
-          const geoSite = getSite();
-          setSiteName(geoSite);
-          if (!isRunning) {
-            // console.log('start timer')
-            start();
-            currentStatus(Date.now(), null);
+  //       if (geoEnter == 'inside') {
+  //         const geoSite = getSite();
+  //         setSiteName(geoSite);
+  //         if (!isRunning) {
+  //           // console.log('start timer')
+  //           start();
+  //           currentStatus(Date.now(), null);
          
-          }
-        }
-        else {
-          // console.log('false on  timer');
+  //         }
+  //       }
+  //       else {
+  //         // console.log('false on  timer');
       
-          if (isRunning) {
-            // console.log('stop on timer')
-            stop();
-            currentStatus(null, Date.now());
-          }
-        }
+  //         if (isRunning) {
+  //           // console.log('stop on timer')
+  //           stop();
+  //           currentStatus(null, Date.now());
+  //         }
+  //       }
    
-      }, 10 * 1000);
+  //     }, 10 * 1000);
   
-      return () => clearInterval(interval);
-    }
-  }, [isRunning,isStart]);
+  //     return () => clearInterval(interval);
+  //   }
+  // }, [isRunning,isStart]);
 
   // check timer value
   if (!dataLoaded) {
