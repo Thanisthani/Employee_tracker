@@ -2,6 +2,8 @@ import * as Location from 'expo-location';
 import * as TaskManager from 'expo-task-manager';
 import { isPointWithinRadius } from 'geolib';
 import { checkTimer, getGeoCoords, setIsEnter, startTime, stopTime } from './storage';
+import { auth, db } from '../../firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 const LOCATION_TASK_NAME = "GEOFENCING";
 
@@ -37,6 +39,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
       if (!isRunning)
       {
         await startTime();
+        await setCurrentStatus(Date.now(), null,coords.name);
         console.log('timmer start')
         }
       setIsEnter('inside');
@@ -49,7 +52,8 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
       setIsEnter('outside');
       if (isRunning)
       {
-        stopTime();
+        await stopTime();
+        await setCurrentStatus(null,Date.now());
         console.log('timmer stop')
       }
     }
@@ -108,4 +112,23 @@ export const stopLocationUpdate = async () => {
 export const getSite = () =>
 {
   return siteName;
+}
+
+// Store check in & check out time & current site on firestore
+export async function setCurrentStatus(checkIn, checkOut,site) {
+  const userID = await auth.currentUser.uid;
+  if (checkIn != null)
+  {
+    await updateDoc(doc(db, 'Employees', userID), {
+      Check_in: checkIn,
+      Check_out: checkOut,
+      Site_name: site
+    });
+  }
+  else
+  {
+    await updateDoc(doc(db, 'Employees', userID), {
+      Check_out: checkOut
+    });
+  }
 }

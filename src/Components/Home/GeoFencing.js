@@ -11,28 +11,13 @@ import * as Location from 'expo-location';
 import {getIsStart, isEnter, setIsStartStorage } from '../../services/storage';
 import { getSite, locationUpdate, stopLocationUpdate } from '../../services/track';
 import {useStopWatch} from '../../hooks/useStopWatch';
-import { collection, doc, setDoc, updateDoc } from 'firebase/firestore';
+import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import Moment from 'moment';
-import * as BackgroundFetch from 'expo-background-fetch';
-import * as TaskManager from 'expo-task-manager';
-
-// const TIMMER_TASK_NAME = "Timmer";
-// TaskManager.defineTask(TIMMER_TASK_NAME, async () => {
-//   const now = Date.now();
-
-//   console.log(`Got background fetch call at date: ${new Date(now).toISOString()}`);
-
-//   // Be sure to return the successful result type!
-//   return BackgroundFetch.BackgroundFetchResult.NewData;
-// });
 
 // Main component
 const GeoFencing = ({userID}) =>
 {
-
-
-  
   // stop watch hook
   const {
     time,
@@ -45,7 +30,7 @@ const GeoFencing = ({userID}) =>
   } = useStopWatch();
 
   // set site name
-  const [siteName, setSiteName] = useState('No site');
+  const [currentStatus, setCurrentStatus] = useState();
 
   const [isStart, setIsStart] = useState(false);
 
@@ -68,12 +53,6 @@ const GeoFencing = ({userID}) =>
 
     // Geofence function
     await locationUpdate();
-    // timmer check on background
-    // await BackgroundFetch.registerTaskAsync(TIMMER_TASK_NAME, {
-    //   minimumInterval: 60 * 1, // 15 minutes
-    //   stopOnTerminate: false, // android only,
-    //   startOnBoot: true, // android only
-    // });
     setIsStart(true);
   }
 
@@ -81,11 +60,11 @@ const GeoFencing = ({userID}) =>
 
   const stopGeo = async () =>
   {
-    // await stopLocationUpdate();
+    await stopLocationUpdate();
     setIsStart(false);
     await reset();
     await uploadWrokLog();
-    // await  BackgroundFetch.unregisterTaskAsync(TIMMER_TASK_NAME);
+
     if (isRunning) {
       await currentStatus(null, Date.now());
     }
@@ -107,25 +86,16 @@ const GeoFencing = ({userID}) =>
 
   }
 
-  // Current status function
-
-  const currentStatus = async (checkIn,checkOut) =>
+  // fetch current site from firestore
+  const getSite = async () =>
   {
-    if(checkIn !=null){
-      await updateDoc(doc(db, 'Employees', userID), {
-        Check_in: checkIn,
-        Check_out: checkOut
-      });
-    }
-    else {
-      await updateDoc(doc(db, 'Employees', userID), {
-        Check_out: checkOut
-      });
-    }
+    const ref = await doc(db, "Employees", userID);
+            
+    await onSnapshot(ref, (snapshot) => {
+      setCurrentStatus(snapshot.data());        
+    });  
   }
-
-
-
+  
   useEffect(() => {
     const loadData = async () => {
 
@@ -134,6 +104,8 @@ const GeoFencing = ({userID}) =>
     }
 
     loadData();
+
+    getSite();
   }, []);
 
   useEffect(() => {
@@ -212,7 +184,7 @@ const GeoFencing = ({userID}) =>
       </View>
       <View style={styles.bottomWrap}>
         <SimpleLineIcons name="location-pin" size={RFPercentage(2)} color="#c1c1c1" />
-        <Text style={styles.locationText}> {siteName}</Text>
+        <Text style={styles.locationText}> {currentStatus? currentStatus.Site_name : 'No site'}</Text>
         
       </View>
       </View>

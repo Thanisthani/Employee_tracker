@@ -11,6 +11,7 @@ import { collection, doc, onSnapshot, query, where } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
 import { loadingStart, loadingStop } from '../../features/authSlice';
 import Moment from 'moment';
+import { getCurrentStatus } from '../../services/storage';
 
 
 const ActivityDetails = ({userID}) => {
@@ -34,6 +35,10 @@ const ActivityDetails = ({userID}) => {
           setCurrentStatus(snapshot.data());        
         });
 
+        // const data = await getCurrentStatus();
+        // const [checkInTime, checkOutTime] = await data;
+        // await console.log('in check ', checkInTime);
+        // setCurrentStatus({ Check_in:checkInTime[1]? parseInt(checkInTime[1]) : null , Check_out:checkOutTime[1]? parseInt(checkOutTime[1]) : null });
         }
         catch (error)
         {
@@ -66,9 +71,16 @@ const ActivityDetails = ({userID}) => {
     try {
       if (currentStatus)
       {
+        if (currentStatus.Check_in != null)
+          {
+        await console.log('check in tym',currentStatus.Check_in);
         const checkin = await formatTime(currentStatus.Check_in);
-        await setCheckIn(checkin);
-        if (currentStatus.Check_out != null)
+          await setCheckIn(checkin);
+        }
+        else {
+          await setCheckIn(null);
+        }
+        if ( currentStatus.Check_out != null)
         {
           const checkout = await formatTime(currentStatus.Check_out);
           await setCheckout(checkout);

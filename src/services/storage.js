@@ -1,9 +1,13 @@
 import AsyncStorage from '@react-native-async-storage/async-storage';
+import { auth, db } from '../../firebase';
+import { doc, updateDoc } from 'firebase/firestore';
 
 
 const geofenceStorageName = 'geo';
 const geoCoordinates = 'geoCoord';
 const statusStorage = 'status';
+const checkInTime = 'checkIn';
+const checkOutTime = 'checkOut';
 const ASYNC_KEYS = {
   timeWhenLastStopped: "useStopWatch::timeWhenLastStopped",
   isRunning: "useStopWatch::isRunning",
@@ -98,4 +102,36 @@ export async function checkTimer() {
     return false;
   }
 
+}
+
+// // Seet check in & check out time
+// export async function setCurrentStatus(checkIn, checkOut) {
+//   const userID = await auth.currentUser.uid;
+//   if (checkIn != null) {
+//     // await AsyncStorage.multiSet([
+//     //   [checkInTime, checkIn.toString()],
+//     //   [checkOutTime, ''],
+//     // ]);
+//     await updateDoc(doc(db, 'Employees', userID), {
+//       Check_in: checkIn,
+//       Check_out: checkOut
+//     });
+//   }
+//   else {
+//     // await AsyncStorage.setItem(checkOutTime, checkOut);
+//     await updateDoc(doc(db, 'Employees', userID), {
+//       Check_out: checkOut
+//     });
+//   }
+// }
+
+// Get check in & check out time
+export async function getCurrentStatus() {
+  
+  const data = await AsyncStorage.multiGet([
+    checkInTime,
+    checkOutTime.toString()
+  ]);
+
+  return data;
 }
