@@ -11,6 +11,10 @@ import {
   } from 'react-native-responsive-screen';
   import { RFPercentage } from 'react-native-responsive-fontsize';
 import { useStopWatch } from '../hooks/useStopWatch';
+import Header from '../Components/Profile/Header';
+import ProfilePic from '../Components/Profile/ProfilePic';
+import UserDetails from '../Components/Profile/UserDetails';
+import AccountDetails from '../Components/Profile/AccountDetails';
 
 const ProfileScreen = () => {
  
@@ -34,11 +38,14 @@ const ProfileScreen = () => {
    
  }
     return (
-        <View style= {styles.container}>
-            <Text style={styles.mainHeading}>Profile</Text>
-            <TouchableOpacity style={styles.btn} onPress={handleSignOut}>
+        <View style={styles.container}>
+            <Header />
+            <ProfilePic />
+            <UserDetails />
+            <AccountDetails />
+            {/* <TouchableOpacity style={styles.btn} onPress={handleSignOut}>
                 <Text style={styles.btnText}>Sign Out</Text>
-            </TouchableOpacity>
+            </TouchableOpacity> */}
    
         </View>
     )
@@ -47,14 +54,12 @@ const ProfileScreen = () => {
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+        alignItems: 'center',
         paddingTop: StatusBar.currentHeight + hp('1%'),
-        alignItems:'center'
+        paddingHorizontal:wp('10%')
     },
-    mainHeading: {
-        fontFamily:'Poppins_600SemiBold',
-        fontSize:RFPercentage(4),
-        color:TextPrimaryColor
-      },
     btn: {
         marginTop:hp('5%'),
         backgroundColor: PrimaryColor,
