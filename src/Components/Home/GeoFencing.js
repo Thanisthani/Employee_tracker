@@ -8,10 +8,10 @@ import {
   import { RFPercentage } from 'react-native-responsive-fontsize';
 import { PrimaryColor } from '../../constants/Color';
 import * as Location from 'expo-location';
-import {getIsStart, isEnter, setIsStartStorage } from '../../services/storage';
-import { getSite, locationUpdate, stopLocationUpdate } from '../../services/track';
+import {getIsStart, setIsStartStorage } from '../../services/storage';
+import {locationUpdate, setCurrentStatus, stopLocationUpdate } from '../../services/track';
 import {useStopWatch} from '../../hooks/useStopWatch';
-import { collection, doc, onSnapshot, setDoc } from 'firebase/firestore';
+import { collection, doc, onSnapshot, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import Moment from 'moment';
 
@@ -21,8 +21,6 @@ const GeoFencing = ({userID}) =>
   // stop watch hook
   const {
     time,
-    start,
-    stop,
     reset,
     isRunning,
     dataLoaded,
@@ -30,7 +28,7 @@ const GeoFencing = ({userID}) =>
   } = useStopWatch();
 
   // set site name
-  const [currentStatus, setCurrentStatus] = useState();
+  const [siteStatus, setSiteStatus] = useState();
 
   const [isStart, setIsStart] = useState(false);
 
@@ -66,7 +64,7 @@ const GeoFencing = ({userID}) =>
     await uploadWrokLog();
 
     if (isRunning) {
-      await currentStatus(null, Date.now());
+      await setCurrentStatus(null,Date.now());
     }
   }
 
@@ -77,12 +75,16 @@ const GeoFencing = ({userID}) =>
     const today = await Moment(now).format('YYYY-MM-DD'); 
     const ref = await collection(db, "Employees", userID, "Working_hours");
     await setDoc(doc(ref),
-    { 
-      Date: today,
-      Duration: actualTime
-    }).then(() => {
+      {
+        Date: today,
+        Duration: actualTime
+      }).then(() => {
         console.log("upload wrok log")
-    })
+      });
+    
+      await updateDoc(doc(db, 'Employees', userID), {
+        Site_name: 'No site'
+      });
 
   }
 
@@ -92,7 +94,7 @@ const GeoFencing = ({userID}) =>
     const ref = await doc(db, "Employees", userID);
             
     await onSnapshot(ref, (snapshot) => {
-      setCurrentStatus(snapshot.data());        
+      setSiteStatus(snapshot.data());        
     });  
   }
   
@@ -184,7 +186,7 @@ const GeoFencing = ({userID}) =>
       </View>
       <View style={styles.bottomWrap}>
         <SimpleLineIcons name="location-pin" size={RFPercentage(2)} color="#c1c1c1" />
-        <Text style={styles.locationText}> {currentStatus? currentStatus.Site_name : 'No site'}</Text>
+        <Text style={styles.locationText}> {siteStatus? siteStatus.Site_name : 'No site'}</Text>
         
       </View>
       </View>

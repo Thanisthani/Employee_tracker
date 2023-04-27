@@ -191,7 +191,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins_600SemiBold',
         fontSize: RFPercentage(3.2),
         color: PrimaryColor,
-        marginVertical: hp('2%')
+        marginVertical: hp('1%')
       },
       actBox: {
         flexDirection: 'row',

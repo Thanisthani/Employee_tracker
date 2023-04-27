@@ -7,9 +7,10 @@ import {
   Poppins_300Light
 } from "@expo-google-fonts/poppins";
 import Index from './src';
-import { Provider } from 'react-redux';
-import AuthNavigation from './src/Navigation/AuthNavigation';
-import {store} from './src/features/store'
+import * as SplashScreen from 'expo-splash-screen';
+import { useState,useCallback , useEffect } from 'react';
+import { View } from 'react-native';
+
 
 export default function App() {
   let [fontsLoaded] = useFonts({
@@ -19,10 +20,11 @@ export default function App() {
     Poppins_300Light
   
   });
-  if (!fontsLoaded) {
+
+  if ( !fontsLoaded) {
     return null;
   }
-  
+
   return (
 
      <>
