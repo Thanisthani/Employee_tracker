@@ -7,7 +7,7 @@ import {
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
 
-const UserDetails = () =>
+const UserDetails = ({user}) =>
 {
   return (
       <View style={styles.container}> 
@@ -16,7 +16,7 @@ const UserDetails = () =>
           </View>
           <View style={styles.labelWrapper}>
               <Text style={styles.label}>Employee ID</Text>
-              <Text style={styles.details}>00000999</Text>
+              <Text style={styles.details}>{ user.Emp_ID}</Text>
           </View>
           {/* horizontal line */}
 
@@ -24,7 +24,7 @@ const UserDetails = () =>
 
           <View style={styles.labelWrapper}>
               <Text style={styles.label}>Email</Text>
-              <Text style={styles.details}>Johndavid@gmail.com</Text>
+              <Text style={styles.details}>{ user.Email}</Text>
           </View>
 
           

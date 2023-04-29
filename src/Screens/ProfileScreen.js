@@ -1,7 +1,7 @@
-import React from 'react'
-import { Text, TouchableOpacity, View,StyleSheet,StatusBar} from 'react-native';
+import React, { useEffect, useState } from 'react'
+import { View,StyleSheet,StatusBar, Text} from 'react-native';
 import { signOut } from "firebase/auth";
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/authSlice';
 import { PrimaryColor, TextPrimaryColor } from '../constants/Color';
@@ -15,38 +15,44 @@ import Header from '../Components/Profile/Header';
 import ProfilePic from '../Components/Profile/ProfilePic';
 import UserDetails from '../Components/Profile/UserDetails';
 import AccountDetails from '../Components/Profile/AccountDetails';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 const ProfileScreen = () => {
  
-    //   stop watch hook
-  const {
-    reset
-  } = useStopWatch();
-    const dispatch = useDispatch();
+// user details
+    const [user, setUser] = useState();
 
-    // // sign out
-    const handleSignOut = () => {
-     signOut(auth).then(() => {
-       console.log("User sign out");
-         dispatch(logout());
-         reset();
-     }).catch((error) => {
-         console.log(error)
-     })
+
+
+    
+
+            
+    // fetch user data
+    
+    const getUser = async () => {
+        const ref = await doc(db, "Employees", auth.currentUser.uid);
         
-        
-   
- }
+        await onSnapshot(ref, (snapshot) => {
+          setUser(snapshot.data());        
+        });
+    } 
+
+
+    useEffect(() => {
+        getUser();
+    }, []);
+    
     return (
         <View style={styles.container}>
             <Header />
-            <ProfilePic />
-            <UserDetails />
-            <AccountDetails />
-            {/* <TouchableOpacity style={styles.btn} onPress={handleSignOut}>
-                <Text style={styles.btnText}>Sign Out</Text>
-            </TouchableOpacity> */}
-   
+            {user &&
+                <>
+                <ProfilePic user={user} />
+                <UserDetails user={user} />
+                <AccountDetails user={user} />
+                </>
+            }
+
         </View>
     )
 }

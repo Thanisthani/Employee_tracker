@@ -9,7 +9,7 @@ import { Image } from 'react-native';
 import { TextPrimaryColor } from '../../constants/Color';
 
 
-const ProfilePic = () =>
+const ProfilePic = ({user}) =>
 {
   return (
       <View style={styles.container}>
@@ -20,8 +20,8 @@ const ProfilePic = () =>
               source={{ uri: 'https://i.pinimg.com/474x/98/51/1e/98511ee98a1930b8938e42caf0904d2d.jpg' }}
           />
           <View style={styles.textWrapper}>
-              <Text style={styles.pName}>JohnDavid</Text>
-              <Text style={styles.job}>Labourer</Text>
+                  <Text style={styles.pName}>{user.Emp_name }</Text>
+                  <Text style={styles.job}>{user.Emp_role}</Text>
           </View>
           </View>
       </View>

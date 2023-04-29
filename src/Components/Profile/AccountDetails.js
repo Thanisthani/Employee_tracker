@@ -7,8 +7,26 @@ import {
 import { RFPercentage } from 'react-native-responsive-fontsize';
 import { TextPrimaryColor } from '../../constants/Color';
 
+const AccountDetails = () => {
 
-const AccountDetails =()=> {
+//   stop watch hook
+  const {
+    reset
+    } = useStopWatch();
+
+    const dispatch = useDispatch();
+
+    // sign out
+    const handleSignOut = () => {
+        signOut(auth).then(() => {
+            console.log("User sign out");
+            dispatch(logout());
+            reset();
+        }).catch((error) => {
+            console.log(error)
+        })
+    }
+    
   return (
     <View style={styles.container}> 
     <View style={styles.headingWrapper}>
@@ -21,9 +39,10 @@ const AccountDetails =()=> {
 
     <View style={styles.horizontalLine}></View>
 
-    <View style={styles.labelWrapper}>
-        <Text style={styles.label}>Sign Out</Text>
-    </View>
+          <TouchableOpacity style={styles.labelWrapper} onPress={handleSignOut}>
+              <Text style={styles.label}>Sign Out</Text>
+          </TouchableOpacity>
+          
 </View>
   )
 }
@@ -47,7 +66,7 @@ const styles = StyleSheet.create({
     },
     label: {
         paddingVertical:hp('1.5%'),
-        fontSize: RFPercentage(2.6),
+        fontSize: RFPercentage(2.9),
         fontFamily: 'Poppins_400Regular',
         color: '#032F41',
     },
