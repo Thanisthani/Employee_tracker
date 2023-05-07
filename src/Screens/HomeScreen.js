@@ -1,5 +1,5 @@
-import React, { useState } from 'react'
-import {StatusBar, StyleSheet, Text, View } from 'react-native';
+import React, { useEffect, useState } from 'react'
+import {Modal, StatusBar, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -7,29 +7,57 @@ import {
 import { RFPercentage } from 'react-native-responsive-fontsize';
 import { PrimaryColor, TextPrimaryColor } from '../constants/Color';
 import GeoFencing from '../Components/Home/GeoFencing';
-import { auth } from '../../firebase';
+import { auth, db } from '../../firebase';
 import ActivityDetails from '../Components/Home/ActivityDetails';
+import { doc, onSnapshot } from 'firebase/firestore';
 
 const HomeScreen = () => {
-  const [currentUser, setCurrentUser] = useState(auth.currentUser.uid? auth.currentUser.uid : null);
+  const [currentUser, setCurrentUser] = useState(auth.currentUser.uid ? auth.currentUser.uid : null);
+  const [loading, setLoading] = useState(false);
 
+  // user details
+  const [user, setUser] = useState();
+            
+  // fetch user data
+  
+  const getUser = async () => {
+   await setLoading(true);
+      const ref = await doc(db, "Employees", auth.currentUser.uid);
+      
+      await onSnapshot(ref, (snapshot) => {
+        setUser(snapshot.data());        
+      });
+    await setLoading(false);
+  } 
+
+
+  useEffect(() => {
+      getUser();
+  }, []);
+  
+  
   return (
     <View style={styles.container}>
-      <Text style={styles.mainHeading}>Summary</Text>
-      {/* Timer */}
-      {currentUser && 
-      <GeoFencing userID={currentUser}/> 
-      }
-    
-      {/* Activity details */}
-      {currentUser &&
+       {/* Modal */}
+       {/* <Modal
+        animationType="fade"
+        transparent={false}
+        visible={loading}
+        statusBarTranslucent={true}
+      >
+        <View style={styles.indicator}>
+          <Text>Hiiii</Text>
+          <ActivityIndicator animating={true} size="large" color="#0000ff" />
+        </View>
+      </Modal> */}
+      {currentUser && user &&
         <>
-        <ActivityDetails userID={currentUser} />
+            <Text style={styles.mainHeading}>Summary</Text>
+            <GeoFencing userID={currentUser} site={user.Site_name} /> 
+            <ActivityDetails user={user} userID={currentUser} />
         </>
       }
-
     </View>
-   
   )
 }
 
@@ -45,6 +73,11 @@ const styles = StyleSheet.create({
     fontFamily:'Poppins_600SemiBold',
     fontSize:RFPercentage(5),
     color:TextPrimaryColor
+  },
+  indicator: {
+    flex: 1,
+    justifyContent: 'center',
+    alignItems:'center'
   }
 });
 

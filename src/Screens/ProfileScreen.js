@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from 'react'
 import { View,StyleSheet,StatusBar, Text} from 'react-native';
-import { signOut } from "firebase/auth";
+
 import { auth, db } from '../../firebase';
 import { useDispatch } from 'react-redux';
 import { logout } from '../features/authSlice';
@@ -9,23 +9,17 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
-  import { RFPercentage } from 'react-native-responsive-fontsize';
-import { useStopWatch } from '../hooks/useStopWatch';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 import Header from '../Components/Profile/Header';
 import ProfilePic from '../Components/Profile/ProfilePic';
 import UserDetails from '../Components/Profile/UserDetails';
 import AccountDetails from '../Components/Profile/AccountDetails';
 import { doc, onSnapshot } from 'firebase/firestore';
 
-const ProfileScreen = () => {
+const ProfileScreen = ({ navigation }) => {
  
 // user details
     const [user, setUser] = useState();
-
-
-
-    
-
             
     // fetch user data
     
@@ -44,12 +38,12 @@ const ProfileScreen = () => {
     
     return (
         <View style={styles.container}>
-            <Header />
+            <Header navigation={navigation}/>
             {user &&
                 <>
                 <ProfilePic user={user} />
                 <UserDetails user={user} />
-                <AccountDetails user={user} />
+                <AccountDetails user={user}/>
                 </>
             }
 

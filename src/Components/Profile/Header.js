@@ -1,5 +1,5 @@
 import React from 'react'
-import { StyleSheet, Text, View } from 'react-native';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
 import { Ionicons } from '@expo/vector-icons';
 import {
     widthPercentageToDP as wp,
@@ -9,10 +9,13 @@ import { PrimaryColor } from '../../constants/Color';
 import { RFPercentage } from 'react-native-responsive-fontsize';
 
 
-const Header =() => {
+const Header =({ navigation }) => {
     return (
         <View style={styles.container}>
-            <Ionicons name="chevron-back-sharp" size={24} color={PrimaryColor} />
+            <TouchableOpacity onPress={()=>navigation.goBack()}>
+                <Ionicons name="chevron-back-sharp" size={24} color={PrimaryColor} />
+            </TouchableOpacity>
+         
             <Text style={styles.heading}>
                Profile
             </Text>

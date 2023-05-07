@@ -11,11 +11,10 @@ import { collection, doc, onSnapshot, query, where } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
 import { loadingStart, loadingStop } from '../../features/authSlice';
 import Moment from 'moment';
-import { getCurrentStatus } from '../../services/storage';
 
 
-const ActivityDetails = ({userID}) => {
-  const [currentStatus, setCurrentStatus] = useState();
+const ActivityDetails = ({user,userID}) => {
+  // const [currentStatus, setCurrentStatus] = useState();
   const [checkIn, setCheckIn] = useState();
   const [checkOut, setCheckout] = useState(null);
   const [last, setLast] = useState();
@@ -26,25 +25,25 @@ const ActivityDetails = ({userID}) => {
 
   const dispatch = useDispatch();
 
-    const getStatusTime =async () => {
-      try {
-       await dispatch(loadingStart());
-        const ref = await doc(db, "Employees", userID);
+    // const getStatusTime =async () => {
+    //   try {
+    //    await dispatch(loadingStart());
+    //     const ref = await doc(db, "Employees", userID);
             
-        await onSnapshot(ref, (snapshot) => {
-          setCurrentStatus(snapshot.data());        
-        });
+    //     await onSnapshot(ref, (snapshot) => {
+    //       setCurrentStatus(snapshot.data());        
+    //     });
 
-        // const data = await getCurrentStatus();
-        // const [checkInTime, checkOutTime] = await data;
-        // await console.log('in check ', checkInTime);
-        // setCurrentStatus({ Check_in:checkInTime[1]? parseInt(checkInTime[1]) : null , Check_out:checkOutTime[1]? parseInt(checkOutTime[1]) : null });
-        }
-        catch (error)
-        {
-            console.log(error.stack,'firebase');
-        }
-    }
+    //     // const data = await getCurrentStatus();
+    //     // const [checkInTime, checkOutTime] = await data;
+    //     // await console.log('in check ', checkInTime);
+    //     // setCurrentStatus({ Check_in:checkInTime[1]? parseInt(checkInTime[1]) : null , Check_out:checkOutTime[1]? parseInt(checkOutTime[1]) : null });
+    //     }
+    //     catch (error)
+    //     {
+    //         console.log(error.stack,'firebase');
+    //     }
+    // }
 
   //  contvert two digit
     const padStart = (num) => {
@@ -69,20 +68,20 @@ const ActivityDetails = ({userID}) => {
 
   const storeTime = async () => {
     try {
-      if (currentStatus)
+      if (user)
       {
-        if (currentStatus.Check_in != null)
+        if (user.Check_in != null)
           {
-        await console.log('check in tym',currentStatus.Check_in);
-        const checkin = await formatTime(currentStatus.Check_in);
+        await console.log('check in tym',user.Check_in);
+        const checkin = await formatTime(user.Check_in);
           await setCheckIn(checkin);
         }
         else {
           await setCheckIn(null);
         }
-        if ( currentStatus.Check_out != null)
+        if ( user.Check_out != null)
         {
-          const checkout = await formatTime(currentStatus.Check_out);
+          const checkout = await formatTime(user.Check_out);
           await setCheckout(checkout);
         } 
         else {
@@ -129,10 +128,9 @@ const ActivityDetails = ({userID}) => {
   
 
 
-    useEffect(() => {
-      getStatusTime();
-      getYesterdayLog();
-    }, []);
+  useEffect(() => {
+    getYesterdayLog();
+  }, []);
   
   useEffect(() => {
     getLogDuration();
@@ -140,11 +138,10 @@ const ActivityDetails = ({userID}) => {
   
   useEffect(() => {
     storeTime();
-  }, [currentStatus]);
-
+  }, [user]);
 
   return (
-      <>
+    <>
       <Text style={styles.actText}>Activity Details</Text>
 
       <View style={styles.actBox}>
@@ -177,7 +174,7 @@ const ActivityDetails = ({userID}) => {
         <View style={styles.horizontalLine}></View>
         <View style={styles.timeLogWrapper}>
           <Text style={styles.subHeading}>Week Total:</Text>
-          <Text style={styles.timeLog}>38 hours 35 minutes</Text>
+          <Text style={styles.timeLog}>08 hours 32 minutes</Text>
         </View>
         
         </View>

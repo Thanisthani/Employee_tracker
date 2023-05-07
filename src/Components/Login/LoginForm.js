@@ -44,6 +44,7 @@ const LoginForm = () => {
 
                 await dispatch(loginSuccess());
                 setLoading(false);
+                console.log('fteched')
             })
             .catch((re) => {
                 console.log(re + "hi");

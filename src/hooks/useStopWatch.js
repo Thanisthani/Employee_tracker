@@ -127,6 +127,7 @@ export function  useStopWatch()
   // reset timer
   const reset = async () =>
   {
+    console.log("timer reset")
     setIsRunning(false);
     setTime(0);
     setStartTime(0);

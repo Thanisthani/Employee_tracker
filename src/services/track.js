@@ -18,10 +18,10 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
     return;
   };
   
-
   try
   {
-    const isRunning = await checkTimer();
+    let isRunning = await checkTimer();
+    let isEnter =  false;
     // Check point whether it's inside geofence or not
     for (coords of coordinates)
     {
@@ -36,27 +36,41 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
     {
       console.log('Status of  geofence true');
      
-      if (!isRunning)
-      {
-        await startTime();
-        await setCurrentStatus(Date.now(), null,coords.name);
-        console.log('timmer start')
-        }
-      setIsEnter('inside');
-      siteName = coords.name;
+     isEnter = await true;
       break;
     }
     else
     {
-      console.log('Status of geofence false');
+      console.log('Status of  geofence false');
+      isEnter = await false;
+    }
+    }
+    // trigger app
+    if (isEnter)
+    {
+      console.log('After for loop');
+     
+      if (!isRunning)
+      {
+        await startTime();
+        await setCurrentStatus(Date.now(), null,coords.name);
+        console.log('timmer start now')
+        }
+      setIsEnter('inside');
+      siteName = coords.name;
+   
+    }
+    else
+    {
+      console.log('After loop Status of geofence false test', isRunning);
+      isRunning = await checkTimer();
       setIsEnter('outside');
       if (isRunning)
       {
+        console.log('stop time now',isRunning)
         await stopTime();
         await setCurrentStatus(null,Date.now());
-        console.log('timmer stop')
       }
-    }
     }
  
   }
