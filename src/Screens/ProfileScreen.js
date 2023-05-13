@@ -59,22 +59,6 @@ const styles = StyleSheet.create({
         alignItems: 'center',
         paddingTop: StatusBar.currentHeight + hp('1%'),
         paddingHorizontal:wp('10%')
-    },
-    btn: {
-        marginTop:hp('5%'),
-        backgroundColor: PrimaryColor,
-        padding: 5,
-        marginBottom: 30,
-        width: wp('70%'),
-        height: hp('8%'),
-        alignItems: 'center',
-        justifyContent: 'center',
-        borderRadius: 28,
-       
-    },
-    btnText: {
-        color: '#fff',
-        fontSize:RFPercentage('3')
     }
 });
 

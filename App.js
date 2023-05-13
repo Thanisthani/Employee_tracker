@@ -4,7 +4,8 @@ import {
   Poppins_500Medium,
   Poppins_400Regular,
   Poppins_600SemiBold,
-  Poppins_300Light
+  Poppins_300Light,
+  Poppins_700Bold
 } from "@expo-google-fonts/poppins";
 import Index from './src';
 import * as SplashScreen from 'expo-splash-screen';
@@ -17,6 +18,7 @@ export default function App() {
     Poppins_500Medium,
     Poppins_400Regular,
     Poppins_600SemiBold,
+    Poppins_700Bold,
     Poppins_300Light
   
   });

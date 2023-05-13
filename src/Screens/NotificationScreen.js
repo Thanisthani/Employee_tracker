@@ -1,32 +1,33 @@
-import React from 'react'
-import { StatusBar } from 'react-native';
-import { StyleSheet } from 'react-native';
-import { Text, View } from 'react-native'
-import { RFPercentage } from 'react-native-responsive-fontsize';
-import { TextPrimaryColor } from '../constants/Color';
+import React, { useEffect, useState } from 'react'
+import { View,StyleSheet,StatusBar, Text} from 'react-native';
 import {
-  widthPercentageToDP as wp,
-  heightPercentageToDP as hp,
-} from 'react-native-responsive-screen';
+    widthPercentageToDP as wp,
+    heightPercentageToDP as hp,
+  } from 'react-native-responsive-screen';
 
-const NotificationScreen = ()=>{
-  return (
-    <View style= {styles.container}>
-    <Text style={styles.mainHeading}>Notification</Text>
-</View>
-  )
+import Header from '../Components/NotificationScreen/Header';
+import ListOfNotification from '../Components/NotificationScreen/ListOfNotification';
+
+
+const NotificationScreen = ({ navigation }) => {
+    
+    return (
+        <View style={styles.container}>
+            <Header navigation={ navigation} />
+            <ListOfNotification />
+        </View>
+    )
 }
+
 
 const styles = StyleSheet.create({
     container: {
+        flex: 1,
+        backgroundColor: '#ffffff',
+        // alignItems: 'center',
         paddingTop: StatusBar.currentHeight + hp('1%'),
-        alignItems:'center'
-    },
-    mainHeading: {
-        fontFamily:'Poppins_600SemiBold',
-        fontSize:RFPercentage(4),
-        color:TextPrimaryColor
-      }
+        paddingHorizontal:wp('6%')
+    }
 });
 
-export default NotificationScreen
+    export default NotificationScreen;

@@ -238,7 +238,7 @@ const styles = StyleSheet.create({
     color:'#ffffff'
   },
   horizontalLine: {
-    width: '90%',
+    width: wp('90%'),
     height: 0.39,
     backgroundColor: '#043d54',
     alignSelf:'center'
