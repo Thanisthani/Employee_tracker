@@ -3,12 +3,13 @@ import * as TaskManager from 'expo-task-manager';
 import { isPointWithinRadius } from 'geolib';
 import { checkTimer, getGeoCoords, setIsEnter, startTime, stopTime } from './storage';
 import { auth, db } from '../../firebase';
-import { doc, updateDoc } from 'firebase/firestore';
+import { addDoc, collection, doc, updateDoc } from 'firebase/firestore';
 
 const LOCATION_TASK_NAME = "GEOFENCING";
 
 let coordinates = [];
 let siteName = 'No site';
+let siteAbb = '';
 
 // Bg task
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }) => {
@@ -48,28 +49,31 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
     // trigger app
     if (isEnter)
     {
+      siteName = await coords.name;
+      siteAbb = await coords.Abbreviation;
       console.log('After for loop');
      
       if (!isRunning)
       {
         await startTime();
-        await setCurrentStatus(Date.now(), null,coords.name);
+        await setCurrentStatus(Date.now(), null,coords.name,coords.site_abb);
         console.log('timmer start now')
         }
       setIsEnter('inside');
-      siteName = coords.name;
+    
    
     }
     else
     {
-      console.log('After loop Status of geofence false test', isRunning);
+      siteName = await coords.name;
+      siteAbb = await coords.Abbreviation;
       isRunning = await checkTimer();
       setIsEnter('outside');
       if (isRunning)
       {
         console.log('stop time now',isRunning)
         await stopTime();
-        await setCurrentStatus(null,Date.now());
+        await setCurrentStatus(null,Date.now(),coords.name,coords.site_abb);
       }
     }
  
@@ -99,7 +103,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
     // Live location update
     await Location.startLocationUpdatesAsync(LOCATION_TASK_NAME, {
       accuracy: Location.Accuracy.BestForNavigation,
-      timeInterval:5 * 1000, //time duration to check location
+      timeInterval:2* 60 * 1000, //time duration to check location
       // android behavior
       foregroundService: {
         notificationTitle: 'Employee tracker is active',
@@ -129,20 +133,36 @@ export const getSite = () =>
 }
 
 // Store check in & check out time & current site on firestore
-export async function setCurrentStatus(checkIn, checkOut,site) {
+export async function setCurrentStatus(checkIn, checkOut,site,abb) {
   const userID = await auth.currentUser.uid;
   if (checkIn != null)
   {
+    console.log('Abbrevation', abb);
     await updateDoc(doc(db, 'Employees', userID), {
       Check_in: checkIn,
       Check_out: checkOut,
       Site_name: site
+    });
+
+    await addDoc(collection(db, 'Employees', userID, 'Time_tracking'),
+      {
+        Site_name:site,
+        Abbrevation:abb,
+        time: checkIn,
+        type:'Checked-In'
     });
   }
   else
   {
     await updateDoc(doc(db, 'Employees', userID), {
       Check_out: checkOut
-    });
+    }); 
+    await addDoc(collection(db, 'Employees', userID, 'Time_tracking'),
+    {
+      Site_name:site,
+      Abbrevation:abb,
+      time: checkOut,
+      type:'Checked-Out'
+  });
   }
 }
