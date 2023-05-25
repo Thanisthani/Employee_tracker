@@ -36,8 +36,9 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
     if (status)
     {
       console.log('Status of  geofence true');
-     
-     isEnter = await true;
+      siteName = await coords.name;
+      siteAbb = await coords.site_abb;
+      isEnter = await true;
       break;
     }
     else
@@ -49,31 +50,25 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
     // trigger app
     if (isEnter)
     {
-      siteName = await coords.name;
-      siteAbb = await coords.Abbreviation;
-      console.log('After for loop');
-     
+      
       if (!isRunning)
       {
         await startTime();
-        await setCurrentStatus(Date.now(), null,coords.name,coords.site_abb);
+        await setCurrentStatus(Date.now(), null,siteName,siteAbb);
         console.log('timmer start now')
         }
       setIsEnter('inside');
-    
    
     }
     else
     {
-      siteName = await coords.name;
-      siteAbb = await coords.Abbreviation;
       isRunning = await checkTimer();
       setIsEnter('outside');
       if (isRunning)
       {
-        console.log('stop time now',isRunning)
+        console.log('stop time now', siteName);
         await stopTime();
-        await setCurrentStatus(null,Date.now(),coords.name,coords.site_abb);
+        await setCurrentStatus(null,Date.now(),siteName,siteAbb);
       }
     }
  
@@ -120,10 +115,8 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
 //  stop geofence
 
 export const stopLocationUpdate = async () => {
-  
-  // await Location.stopLocationUpdatesAsync(LOCATION_TASK_NAME);
   await TaskManager.unregisterTaskAsync(LOCATION_TASK_NAME);
-  // console.log('BG task stoped');
+  await setCurrentStatus(null,Date.now(),siteName,siteAbb);
 }
   
 // get site name
@@ -137,10 +130,10 @@ export async function setCurrentStatus(checkIn, checkOut,site,abb) {
   const userID = await auth.currentUser.uid;
   if (checkIn != null)
   {
-    console.log('Abbrevation', abb);
+
     await updateDoc(doc(db, 'Employees', userID), {
       Check_in: checkIn,
-      Check_out: checkOut,
+      Check_out: null,
       Site_name: site
     });
 
@@ -159,10 +152,10 @@ export async function setCurrentStatus(checkIn, checkOut,site,abb) {
     }); 
     await addDoc(collection(db, 'Employees', userID, 'Time_tracking'),
     {
-      Site_name:site,
-      Abbrevation:abb,
+      Site_name: site,
+      Abbrevation: abb,
       time: checkOut,
-      type:'Checked-Out'
-  });
+      type: 'Checked-Out'
+      });
   }
 }

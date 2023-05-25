@@ -90,10 +90,7 @@ const GeoFencing = ({userID,site}) =>
       const data = await getIsStart();
       setIsStart(data == 'true');
     }
-
     loadData();
-
-    // getSite();
   }, []);
 
   useEffect(() => {
