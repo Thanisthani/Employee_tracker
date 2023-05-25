@@ -11,6 +11,7 @@ import { collection, doc, onSnapshot, query, where } from 'firebase/firestore';
 import { useDispatch } from 'react-redux';
 import { loadingStart, loadingStop } from '../../features/authSlice';
 import Moment from 'moment';
+import moment from 'moment';
 
 
 const ActivityDetails = ({user,userID}) => {
@@ -24,26 +25,6 @@ const ActivityDetails = ({user,userID}) => {
   const yesterday = Moment(date).subtract(1, 'day').format('YYYY-MM-DD'); 
 
   const dispatch = useDispatch();
-
-    // const getStatusTime =async () => {
-    //   try {
-    //    await dispatch(loadingStart());
-    //     const ref = await doc(db, "Employees", userID);
-            
-    //     await onSnapshot(ref, (snapshot) => {
-    //       setCurrentStatus(snapshot.data());        
-    //     });
-
-    //     // const data = await getCurrentStatus();
-    //     // const [checkInTime, checkOutTime] = await data;
-    //     // await console.log('in check ', checkInTime);
-    //     // setCurrentStatus({ Check_in:checkInTime[1]? parseInt(checkInTime[1]) : null , Check_out:checkOutTime[1]? parseInt(checkOutTime[1]) : null });
-    //     }
-    //     catch (error)
-    //     {
-    //         console.log(error.stack,'firebase');
-    //     }
-    // }
 
   //  contvert two digit
     const padStart = (num) => {
@@ -72,8 +53,9 @@ const ActivityDetails = ({user,userID}) => {
       {
         if (user.Check_in != null)
           {
-        await console.log('check in tym',user.Check_in);
-        const checkin = await formatTime(user.Check_in);
+        await console.log('check in tym',user.Check_in.seconds);
+          const checkin = await formatTime(user.Check_in);
+          // const checkin = await moment (user.Check_in.seconds).format("hh:mm a ");
           await setCheckIn(checkin);
         }
         else {
@@ -82,6 +64,7 @@ const ActivityDetails = ({user,userID}) => {
         if ( user.Check_out != null)
         {
           const checkout = await formatTime(user.Check_out);
+          // const checkout = await moment (user.Check_out).format("hh:mm ");
           await setCheckout(checkout);
         } 
         else {
