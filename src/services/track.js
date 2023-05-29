@@ -113,7 +113,6 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
 }
 
 //  stop geofence
-
 export const stopLocationUpdate = async () => {
   await TaskManager.unregisterTaskAsync(LOCATION_TASK_NAME);
   isRunning = await checkTimer();
