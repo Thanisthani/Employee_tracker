@@ -14,6 +14,7 @@ import {useStopWatch} from '../../hooks/useStopWatch';
 import { collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import Moment from 'moment';
+import moment from 'moment';
 
 // Main component
 const GeoFencing = ({userID,site}) =>

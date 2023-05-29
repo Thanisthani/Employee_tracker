@@ -116,7 +116,11 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
 
 export const stopLocationUpdate = async () => {
   await TaskManager.unregisterTaskAsync(LOCATION_TASK_NAME);
-  await setCurrentStatus(null,Date.now(),siteName,siteAbb);
+  isRunning = await checkTimer();
+  if (isRunning)
+  {
+    await setCurrentStatus(null,Date.now(),siteName,siteAbb);
+  }
 }
   
 // get site name

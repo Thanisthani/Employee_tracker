@@ -26,59 +26,59 @@ const ActivityDetails = ({user,userID}) => {
 
   const dispatch = useDispatch();
 
-  //  contvert two digit
-    const padStart = (num) => {
-      return num.toString().padStart(2, "0");
-    };
+  // //  contvert two digit
+  //   const padStart = (num) => {
+  //     return num.toString().padStart(2, "0");
+  //   };
   
-  // format check in time
+  // // format check in time
 
-  const formatTime = async (time) => {
-    try
-    {
-      const timeStamp = await new Date(time);
-      let minutes = await timeStamp.getMinutes();
-      let hours = await timeStamp.getHours();
-      const str = `${padStart(hours)}:${padStart(minutes)}`;
-      return str ;
-    }catch (error)
-    {
-      console.log("error on format ",error)
-    }
-  }
+  // const formatTime = async (time) => {
+  //   try
+  //   {
+  //     const timeStamp = await new Date(time);
+  //     let minutes = await timeStamp.getMinutes();
+  //     let hours = await timeStamp.getHours();
+  //     const str = `${padStart(hours)}:${padStart(minutes)}`;
+  //     return str ;
+  //   }catch (error)
+  //   {
+  //     console.log("error on format ",error)
+  //   }
+  // }
 
-  const storeTime = async () => {
-    try {
-      if (user)
-      {
-        if (user.Check_in != null)
-          {
-        await console.log('check in tym',user.Check_in.seconds);
-          const checkin = await formatTime(user.Check_in);
-          // const checkin = await moment (user.Check_in.seconds).format("hh:mm a ");
-          await setCheckIn(checkin);
-        }
-        else {
-          await setCheckIn(null);
-        }
-        if ( user.Check_out != null)
-        {
-          const checkout = await formatTime(user.Check_out);
-          // const checkout = await moment (user.Check_out).format("hh:mm ");
-          await setCheckout(checkout);
-        } 
-        else {
-          setCheckout(null);
-        }
-        await dispatch(loadingStop());
-      }
-    }
-    catch (error)
-    {
-      console.log('Error on store tym fn',error)
-    }
+  // const storeTime = async () => {
+  //   try {
+  //     if (user)
+  //     {
+  //       if (user.Check_in != null)
+  //         {
+  //       await console.log('check in tym',user.Check_in.seconds);
+  //         const checkin = await formatTime(user.Check_in);
+  //         // const checkin = await moment (user.Check_in.seconds).format("hh:mm a ");
+  //         await setCheckIn(checkin);
+  //       }
+  //       else {
+  //         await setCheckIn(null);
+  //       }
+  //       if ( user.Check_out != null)
+  //       {
+  //         const checkout = await formatTime(user.Check_out);
+  //         // const checkout = await moment (user.Check_out).format("hh:mm ");
+  //         await setCheckout(checkout);
+  //       } 
+  //       else {
+  //         setCheckout(null);
+  //       }
+  //       await dispatch(loadingStop());
+  //     }
+  //   }
+  //   catch (error)
+  //   {
+  //     console.log('Error on store tym fn',error)
+  //   }
 
-  }
+  // }
 
   // Get yesterday duration
 
@@ -91,23 +91,23 @@ const ActivityDetails = ({user,userID}) => {
     )
   }
 
-  // fromat last session
-  const getLogDuration = async () => {
-    try {
-      if (last)
-      {
-      const timeStamp = await new Date(last[0].Duration);
-      let minutes = await timeStamp.getMinutes();
-      let hours = await timeStamp.getHours();
-      const str = `${padStart(hours)} hours ${padStart(minutes)} minutes`;
-      setWorkLog(str);
-    }
-    }
-    catch (error)
-    {
-      console.log("getLogDuration ",error)
-    }
-  }
+  // // fromat last session
+  // const getLogDuration = async () => {
+  //   try {
+  //     if (last)
+  //     {
+  //     const timeStamp = await new Date(last[0].Duration);
+  //     let minutes = await timeStamp.getMinutes();
+  //     let hours = await timeStamp.getHours();
+  //     const str = `${padStart(hours)} hours ${padStart(minutes)} minutes`;
+  //     setWorkLog(str);
+  //   }
+  //   }
+  //   catch (error)
+  //   {
+  //     console.log("getLogDuration ",error)
+  //   }
+  // }
   
 
 
@@ -115,13 +115,13 @@ const ActivityDetails = ({user,userID}) => {
     getYesterdayLog();
   }, []);
   
-  useEffect(() => {
-    getLogDuration();
-  },[last])
+  // useEffect(() => {
+  //   getLogDuration();
+  // },[last])
   
-  useEffect(() => {
-    storeTime();
-  }, [user]);
+  // useEffect(() => {
+  //   storeTime();
+  // }, [user]);
 
   return (
     <>
@@ -130,14 +130,14 @@ const ActivityDetails = ({user,userID}) => {
       <View style={styles.actBox}>
         <View style={styles.timeBox}>
           <Text style={styles.label}>In time</Text>
-          <Text style={styles.timeText}>{checkIn ? checkIn : '00:00'}</Text>
+          <Text style={styles.timeText}>{user.Check_in ?moment(user.Check_in).format("hh:mm a") :'00:00'}</Text>
         </View>
 
         {/* vertical line */}
         <View style={styles.verticalLine}></View>
         <View style={styles.timeBox}>
           <Text style={styles.label}>Out time</Text>
-          <Text style={styles.timeText}>{checkOut ? checkOut : '00:00'}</Text>
+          <Text style={styles.timeText}>{user.Check_out ?moment(user.Check_out).format("hh:mm a") :'00:00'}</Text>
         </View>
   
       </View>
@@ -146,7 +146,7 @@ const ActivityDetails = ({user,userID}) => {
        <View style={styles.summaryBox}>
         <View style={styles.timeLogWrapper}>
           <Text style={styles.subHeading}>Last Session:</Text>
-          {workLog ? <Text style={styles.timeLog}>{ workLog}</Text>
+          {last ? <Text style={styles.timeLog}>{moment(last[0].Duration).format("hh")} hours {moment(last[0].Duration).format("mm")} minutes</Text>
             :
             <Text style={styles.timeLog}>00 hours 00 minutes</Text>
           }
@@ -171,7 +171,7 @@ const styles = StyleSheet.create({
         fontFamily: 'Poppins_600SemiBold',
         fontSize: RFPercentage(3.2),
         color: PrimaryColor,
-        marginVertical: hp('1%')
+        marginVertical: hp('1.5%')
       },
       actBox: {
         flexDirection: 'row',
@@ -192,7 +192,7 @@ const styles = StyleSheet.create({
       },
       timeText: {
         fontFamily: 'Poppins_600SemiBold',
-        fontSize: RFPercentage(4),
+        fontSize: RFPercentage(3.5),
         color: PrimaryColor,
       },
       verticalLine: {
