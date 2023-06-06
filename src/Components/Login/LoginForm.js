@@ -25,14 +25,15 @@ const LoginForm = () => {
   const authUser = useSelector((state) => state.auth);
 
     const LoginScheme = Yup.object().shape({
-        email: Yup.string().email('Incorrect email').required('Email must be required'),
+        username: Yup.string().required('Username must be required'),
         password: Yup.string().min(8, 'Password is too short - should be 8 chars minimum.').required('Password is required'),
     });
 
     // handle form submit
     const userSignin = async (values) => {
+        const email = await values.username + '@enrich.uk';
        setLoading(true);
-       await signInWithEmailAndPassword(auth, values.email, values.password)
+       await signInWithEmailAndPassword(auth, email , values.password)
             .then(async (re) => {
                 // console.log("Sucessfully log in ");
 
@@ -61,26 +62,26 @@ const LoginForm = () => {
      
           <View style={styles.wrapper}>
               <Formik
-                    initialValues={{ email: '',password:'' }}
+                    initialValues={{ username: '',password:'' }}
                     onSubmit={values => userSignin(values)}
                     validationSchema={LoginScheme}
                 >
                     {({ handleChange, handleBlur, handleSubmit, values, errors, isValid }) => (
 
                         <View>
-                            {/* EMAIL */}
+                            {/* Username */}
                             <View >
-                                <Text style={styles.label}>Enter your email</Text>
+                                <Text style={styles.label}>Enter your Username</Text>
                                 <TextInput
-                                    onChangeText={handleChange('email')}
-                                    onBlur={handleBlur('email')}
-                              value={values.email}
-                              style={[styles.inputfield,{borderColor:errors.email?'#FF0000':'#E3E5E5'}]}
-                              placeholder={'email'}
+                                    onChangeText={handleChange('username')}
+                                    onBlur={handleBlur('username')}
+                              value={values.username}
+                              style={[styles.inputfield,{borderColor:errors.username?'#FF0000':'#E3E5E5'}]}
+                              placeholder={'Username'}
                               placeholderTextColor="#94999C" 
-                              textContentType='emailAddress'
+                              textContentType='name'
                                 />
-                                {errors.email && <Text style={styles.errorText}>{errors.email}</Text>}
+                                {errors.username && <Text style={styles.errorText}>{errors.username}</Text>}
 
 
                             </View>
