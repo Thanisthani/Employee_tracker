@@ -5,7 +5,7 @@ import {
     widthPercentageToDP as wp,
     heightPercentageToDP as hp,
   } from 'react-native-responsive-screen';
-  import { RFPercentage } from 'react-native-responsive-fontsize';
+import { RFPercentage } from 'react-native-responsive-fontsize';
 import { PrimaryColor } from '../../constants/Color';
 import * as Location from 'expo-location';
 import {getIsStart, setIsStartStorage } from '../../services/storage';
@@ -14,7 +14,7 @@ import {useStopWatch} from '../../hooks/useStopWatch';
 import { collection, doc, setDoc, updateDoc } from 'firebase/firestore';
 import { db } from '../../../firebase';
 import Moment from 'moment';
-import moment from 'moment';
+
 
 // Main component
 const GeoFencing = ({userID,site}) =>
@@ -39,12 +39,12 @@ const GeoFencing = ({userID,site}) =>
       const background = await Location.requestBackgroundPermissionsAsync();
       if (!background.granted)
       {
-        console.log('Permission to access location was denied');
+        // console.log('Permission to access location was denied');
       }
     }
     else
     {
-      console.log('Permission to access location was denied');
+      // console.log('Permission to access location was denied');
     }
 
     // Geofence function
@@ -77,7 +77,6 @@ const GeoFencing = ({userID,site}) =>
         Date: today,
         Duration: actualTime
       }).then(() => {
-        console.log("upload wrok log")
       });
     
       await updateDoc(doc(db, 'Employees', userID), {
@@ -146,15 +145,15 @@ const GeoFencing = ({userID,site}) =>
 }
 
 const styles = StyleSheet.create({
-    timerBox: {
-        marginTop:hp('2%'),
-        backgroundColor: PrimaryColor,
-        width: wp('90%'),
-        height: hp('22%'),
-        borderRadius: hp('1.5%'),
-        padding: hp('2%'),
-        justifyContent:'space-around'
-      },
+  timerBox: {
+    marginTop: hp('2%'),
+    backgroundColor: PrimaryColor,
+    width: wp('90%'),
+    height: hp('22%'),
+    borderRadius: hp('1.5%'),
+    padding: hp('2%'),
+    justifyContent: 'space-around'
+  },
       subHeading: {
         fontFamily: 'Poppins_400Regular',
         fontSize: RFPercentage(2.2),

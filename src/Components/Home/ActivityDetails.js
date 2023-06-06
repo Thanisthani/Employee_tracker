@@ -178,8 +178,7 @@ const styles = StyleSheet.create({
         justifyContent: 'space-between',
         alignItems: 'center',
         alignSelf:'center',
-        width:wp('70%')
-        
+        width:wp('85%') 
       },
       timeBox: {
         justifyContent: 'center',
@@ -198,7 +197,8 @@ const styles = StyleSheet.create({
       verticalLine: {
         width: 0.5,
         height: '100%',
-        backgroundColor:'#636363'
+        backgroundColor: '#636363',
+     
   },
   subHeading: {
     fontFamily: 'Poppins_400Regular',

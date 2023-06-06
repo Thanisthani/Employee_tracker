@@ -82,7 +82,7 @@ export function  useStopWatch()
           [ASYNC_KEYS.startTime, startTime.toString()],
         ]);
       } catch (e) {
-        console.log("error persisting data");
+        // console.log("error persisting data");
       }
     };
 

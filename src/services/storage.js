@@ -21,12 +21,10 @@ export  async function isEnter () {
 
   if (data == 'inside')
   {
-      // console.log('local storage true')
         return 'inside';
   }
   else
   {
-    // console.log('local storage false')
         return 'outside'
   };
     
@@ -35,13 +33,10 @@ export  async function isEnter () {
 // Set value in local storage
 export async function setIsEnter(enter){
   await AsyncStorage.setItem(geofenceStorageName, enter);
-  // const data = await AsyncStorage.getItem(geofenceStorageName)
-  // console.log('async local set data',data)
 }
 
 // set coordinates in local storage
 export async function setGeoCoords(coords) {
-  // console.log("Set geo coordinates", coords);
   await AsyncStorage.removeItem(geoCoordinates);
   await AsyncStorage.setItem(geoCoordinates, JSON.stringify(coords));
 }
@@ -52,7 +47,8 @@ export async function getGeoCoords()
   return data ? JSON.parse(data) : [];
 }
   
-export async function setIsStartStorage(start) {
+export async function setIsStartStorage(start)
+{
   await AsyncStorage.setItem(statusStorage, start.toString());
 }
 
@@ -103,27 +99,6 @@ export async function checkTimer() {
   }
 
 }
-
-// // Seet check in & check out time
-// export async function setCurrentStatus(checkIn, checkOut) {
-//   const userID = await auth.currentUser.uid;
-//   if (checkIn != null) {
-//     // await AsyncStorage.multiSet([
-//     //   [checkInTime, checkIn.toString()],
-//     //   [checkOutTime, ''],
-//     // ]);
-//     await updateDoc(doc(db, 'Employees', userID), {
-//       Check_in: checkIn,
-//       Check_out: checkOut
-//     });
-//   }
-//   else {
-//     // await AsyncStorage.setItem(checkOutTime, checkOut);
-//     await updateDoc(doc(db, 'Employees', userID), {
-//       Check_out: checkOut
-//     });
-//   }
-// }
 
 // Get check in & check out time
 export async function getCurrentStatus() {

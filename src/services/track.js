@@ -15,7 +15,7 @@ let siteAbb = '';
 TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }) => {
   if (error)
   {
-    console.log(error, 'IN task manager');
+    // console.log(error, 'IN task manager');
     return;
   };
   
@@ -26,7 +26,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
     // Check point whether it's inside geofence or not
     for (coords of coordinates)
     {
-      console.log('coords name', coords.name);
+      // console.log('coords name', coords.name);
       const status= isPointWithinRadius(
         { latitude: locations[0].coords.latitude, longitude: locations[0].coords.longitude },
         { latitude: coords.latitude, longitude: coords.longitude }, 
@@ -35,7 +35,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
        // Store geofence status on local storage
     if (status)
     {
-      console.log('Status of  geofence true');
+      // console.log('Status of  geofence true');
       siteName = await coords.name;
       siteAbb = await coords.site_abb;
       isEnter = await true;
@@ -43,7 +43,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
     }
     else
     {
-      console.log('Status of  geofence false');
+      // console.log('Status of  geofence false');
       isEnter = await false;
     }
     }
@@ -55,7 +55,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
       {
         await startTime();
         await setCurrentStatus(Date.now(), null,siteName,siteAbb);
-        console.log('timmer start now')
+        // console.log('timmer start now')
         }
       setIsEnter('inside');
    
@@ -66,7 +66,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
       setIsEnter('outside');
       if (isRunning)
       {
-        console.log('stop time now', siteName);
+        // console.log('stop time now', siteName);
         await stopTime();
         await setCurrentStatus(null,Date.now(),siteName,siteAbb);
       }
@@ -75,7 +75,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
   }
   catch (error)
   {
-    console.log('task manger erfror', error);
+    // console.log('task manger erfror', error);
   }
 });
 
@@ -91,7 +91,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
 
     if (!isTaskDefined)
     {
-      console.log("Task is not defined ")
+      // console.log("Task is not defined ")
       return
     }
 
@@ -109,7 +109,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
       activityType: Location.ActivityType.Fitness,
       showsBackgroundLocationIndicator: true,
     });
-    console.log('[tracking]', 'started background location task');
+    // console.log('[tracking]', 'started background location task');
 }
 
 //  stop geofence
