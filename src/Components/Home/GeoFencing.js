@@ -69,7 +69,9 @@ const GeoFencing = ({userID,site}) =>
   // Upload working hours
   const uploadWrokLog = async () =>
   {
-    const now = await new Date();
+    try
+    {
+      const now = await new Date();
     const today = await Moment(now).format('YYYY-MM-DD'); 
     const ref = await collection(db, "Employees", userID, "Working_hours");
     await setDoc(doc(ref),
@@ -82,6 +84,11 @@ const GeoFencing = ({userID,site}) =>
       await updateDoc(doc(db, 'Employees', userID), {
         Site_name: 'No site'
       });
+    }
+    catch (error)
+    {
+      console.log('geofence error', error);
+    }
 
   }
   

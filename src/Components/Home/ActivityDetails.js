@@ -84,11 +84,20 @@ const ActivityDetails = ({user,userID}) => {
 
   const getYesterdayLog = async () => {
     
-    const ref = await collection(db, "Employees", userID, "Working_hours")
-    const q = await query(ref,where("Date", "==", yesterday))
-   await  onSnapshot(q, (snapshot) =>
-      setLast((snapshot.docs.map((log) => ({ id: log.id, ...log.data() }))))
-    )
+    try
+    {
+      const ref = await collection(db, "Employees", userID, "Working_hours")
+      const q = await query(ref,where("Date", "==", yesterday))
+      await onSnapshot(q, (snapshot) =>{
+        setLast((snapshot.docs.map((log) => ({ id: log.id, ...log.data() }))))
+    }
+      );
+    }
+    catch(error)
+    {
+      console.log("Act errorr", error);
+    }
+  
   }
 
   // // fromat last session

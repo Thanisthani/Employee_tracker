@@ -37,18 +37,14 @@ const LoginForm = () => {
             .then(async (re) => {
                 // console.log("Sucessfully log in ");
 
-                const sites = await collection(db, 'Sites');
-                await onSnapshot(sites, (snapshot) => {
-                    setGeoCoords((snapshot.docs.map((site) => ({ id: site.id, ...site.data() }))));
-                });
                 setLoginError(null);
 
                 await dispatch(loginSuccess());
                 setLoading(false);
-                console.log('fteched')
+                // console.log('fteched')
             })
             .catch((re) => {
-                console.log(re + "hi");
+                // console.log(re + "hi");
                 setLoading(false);
                 const message = "Please check your email & password !";
                 dispatch(loginFailed());

@@ -26,7 +26,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
     // Check point whether it's inside geofence or not
     for (coords of coordinates)
     {
-      // console.log('coords name', coords.name);
+      console.log('coords name', coords.name);
       const status= isPointWithinRadius(
         { latitude: locations[0].coords.latitude, longitude: locations[0].coords.longitude },
         { latitude: coords.latitude, longitude: coords.longitude }, 
@@ -35,7 +35,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
        // Store geofence status on local storage
     if (status)
     {
-      // console.log('Status of  geofence true');
+      console.log('Status of  geofence true');
       siteName = await coords.name;
       siteAbb = await coords.site_abb;
       isEnter = await true;
@@ -43,7 +43,7 @@ TaskManager.defineTask(LOCATION_TASK_NAME, async ({ data: { locations }, error }
     }
     else
     {
-      // console.log('Status of  geofence false');
+      console.log('Status of  geofence false');
       isEnter = await false;
     }
     }

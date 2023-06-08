@@ -1,5 +1,5 @@
 import React, { useEffect, useState } from 'react'
-import {Modal, StatusBar, StyleSheet, Text, View, ActivityIndicator } from 'react-native';
+import { StatusBar, StyleSheet, Text, View } from 'react-native';
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
@@ -21,13 +21,19 @@ const HomeScreen = () => {
   // fetch user data
   
   const getUser = async () => {
+    try
+    {
    await setLoading(true);
       const ref = await doc(db, "Employees", auth.currentUser.uid);
       
       await onSnapshot(ref, (snapshot) => {
         setUser(snapshot.data());        
       });
-    await setLoading(false);
+      await setLoading(false);
+    } catch (error)
+    {
+      console.log('Home err:', error);
+    }
   } 
 
 
