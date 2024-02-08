@@ -1,152 +1,187 @@
 import React, { useEffect, useState } from 'react'
-import { StyleSheet, Text, TouchableOpacity, View } from 'react-native';
-import { SimpleLineIcons ,Feather,Ionicons} from '@expo/vector-icons';
+import { StyleSheet, Text, TouchableOpacity, View } from 'react-native'
+import { SimpleLineIcons, Feather, Ionicons } from '@expo/vector-icons'
 import {
-    widthPercentageToDP as wp,
-    heightPercentageToDP as hp,
-  } from 'react-native-responsive-screen';
-import { RFPercentage } from 'react-native-responsive-fontsize';
-import { PrimaryColor } from '../../constants/Color';
-import * as Location from 'expo-location';
-import {getIsStart, setIsStartStorage } from '../../services/storage';
-import {locationUpdate, setCurrentStatus, stopLocationUpdate } from '../../services/track';
-import {useStopWatch} from '../../hooks/useStopWatch';
-import { collection, doc, setDoc, updateDoc } from 'firebase/firestore';
-import { db } from '../../../firebase';
-import Moment from 'moment';
-
+  widthPercentageToDP as wp,
+  heightPercentageToDP as hp,
+} from 'react-native-responsive-screen'
+import { RFPercentage } from 'react-native-responsive-fontsize'
+import { PrimaryColor } from '../../constants/Color'
+import * as Location from 'expo-location'
+import { getIsStart, setIsStartStorage } from '../../services/storage'
+import {
+  locationUpdate,
+  setCurrentStatus,
+  stopLocationUpdate,
+} from '../../services/track'
+import { useStopWatch } from '../../hooks/useStopWatch'
+import { collection, doc, setDoc, updateDoc } from 'firebase/firestore'
+import { db } from '../../../firebase'
+import Moment from 'moment'
+import { SkeletonLoading } from './SkeletonLoading'
 
 // Main component
-const GeoFencing = ({userID,site}) =>
-{
+const GeoFencing = ({ userID, site }) => {
   // stop watch hook
-  const {
-    time,
-    reset,
-    isRunning,
-    dataLoaded,
-    actualTime
-  } = useStopWatch();
+  const { time, reset, isRunning, dataLoaded, actualTime } = useStopWatch()
 
-  const [isStart, setIsStart] = useState(false);
+  const [isStart, setIsStart] = useState(false)
 
   // start location updates
-  const requestPermission = async () =>
-  {
-    const foreground = await Location.requestForegroundPermissionsAsync();
-    if (foreground.granted)
-    {
-      const background = await Location.requestBackgroundPermissionsAsync();
-      if (!background.granted)
-      {
+  const requestPermission = async () => {
+    const foreground = await Location.requestForegroundPermissionsAsync()
+    if (foreground.granted) {
+      const background = await Location.requestBackgroundPermissionsAsync()
+      if (!background.granted) {
         // console.log('Permission to access location was denied');
       }
-    }
-    else
-    {
+    } else {
       // console.log('Permission to access location was denied');
     }
 
     // Geofence function
-    await locationUpdate();
-    setIsStart(true);
+    await locationUpdate()
+    setIsStart(true)
   }
 
   // stop geofence
 
-  const stopGeo = async () =>
-  {
-    await stopLocationUpdate();
-    setIsStart(false);
-    await reset();
-    await uploadWrokLog();
+  const stopGeo = async () => {
+    await stopLocationUpdate()
+    setIsStart(false)
+    await reset()
+    await uploadWrokLog()
 
     if (isRunning) {
-      await setCurrentStatus(null,Date.now());
+      await setCurrentStatus(null, Date.now())
     }
   }
 
   // Upload working hours
-  const uploadWrokLog = async () =>
-  {
-    try
-    {
-      const now = await new Date();
-    const today = await Moment(now).format('YYYY-MM-DD'); 
-    const ref = await collection(db, "Employees", userID, "Working_hours");
-    await setDoc(doc(ref),
-      {
+  const uploadWrokLog = async () => {
+    try {
+      const now = await new Date()
+      const today = await Moment(now).format('YYYY-MM-DD')
+      const ref = await collection(db, 'Employees', userID, 'Working_hours')
+      await setDoc(doc(ref), {
         Date: today,
-        Duration: actualTime
-      }).then(() => {
-      });
-    
-      await updateDoc(doc(db, 'Employees', userID), {
-        Site_name: 'No site'
-      });
-    }
-    catch (error)
-    {
-      console.log('geofence error', error);
-    }
+        Duration: actualTime,
+      }).then(() => {})
 
+      await updateDoc(doc(db, 'Employees', userID), {
+        Site_name: 'No site',
+      })
+    } catch (error) {
+      console.log('geofence error', error)
+    }
   }
-  
+
   useEffect(() => {
     const loadData = async () => {
-      const data = await getIsStart();
-      setIsStart(data == 'true');
+      const data = await getIsStart()
+      setIsStart(data == 'true')
     }
-    loadData();
-  }, []);
+    loadData()
+  }, [])
 
   useEffect(() => {
-    setIsStartStorage(isStart);
-  }, [isStart]);
-  
+    setIsStartStorage(isStart)
+  }, [isStart])
 
   // check timer value
-  if (!dataLoaded) {
-    return null;
-  }
-  
+  // if (!dataLoaded) {
+  //   return (
+  //     <SkeletonLoading background={'#adadad'} highlight={'#ffffff'}>
+  //       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
+  //         <View
+  //           style={{
+  //             width: 100,
+  //             height: 100,
+  //             backgroundColor: '#adadad',
+  //             borderRadius: 10,
+  //           }}
+  //         />
+
+  //         <View style={{ flex: 1, marginLeft: 10 }}>
+  //           <View
+  //             style={{
+  //               backgroundColor: '#adadad',
+  //               width: '50%',
+  //               height: 10,
+  //               marginBottom: 3,
+  //               borderRadius: 5,
+  //             }}
+  //           />
+  //           <View
+  //             style={{
+  //               backgroundColor: '#adadad',
+  //               width: '20%',
+  //               height: 8,
+  //               borderRadius: 5,
+  //             }}
+  //           />
+  //           <View
+  //             style={{
+  //               backgroundColor: '#adadad',
+  //               width: '15%',
+  //               height: 8,
+  //               borderRadius: 5,
+  //               marginTop: 3,
+  //             }}
+  //           />
+  //         </View>
+  //       </View>
+  //     </SkeletonLoading>
+  //   )
+  // }
+
   return (
     <View style={styles.timerBox}>
-           {/* Timer */}
+      {/* Timer */}
       <Text style={styles.subHeading}> Total worked today:</Text>
-      
+
       <View style={styles.timerWrapper}>
         <View style={styles.timeContainer}>
           <Text style={styles.timer}>{time}</Text>
         </View>
-       
-        {isStart ?
-          <View style={styles.btnWrapper}>
-            <TouchableOpacity style={styles.btn} onPress={stopGeo} >
-              <View style={styles.iconWrapper}>
-                <Feather name="stop-circle" size={RFPercentage(6)} color="white" />
-                <Text style={styles.subHeading}>Stop</Text> 
-              </View>
-            </TouchableOpacity>
-          </View>
-          :
-          <View style={styles.btnWrapper}>
-            <TouchableOpacity style={styles.btn} onPress={requestPermission} >
-              <View style={styles.iconWrapper}>
-                <Ionicons name="play-outline" size={RFPercentage(6)} color="white" />
-                <Text style={styles.subHeading}>Start</Text> 
-              </View>
-            </TouchableOpacity>
-          </View>
-        }
 
+        {isStart ? (
+          <View style={styles.btnWrapper}>
+            <TouchableOpacity style={styles.btn} onPress={stopGeo}>
+              <View style={styles.iconWrapper}>
+                <Feather
+                  name="stop-circle"
+                  size={RFPercentage(6)}
+                  color="white"
+                />
+                <Text style={styles.subHeading}>Stop</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        ) : (
+          <View style={styles.btnWrapper}>
+            <TouchableOpacity style={styles.btn} onPress={requestPermission}>
+              <View style={styles.iconWrapper}>
+                <Ionicons
+                  name="play-outline"
+                  size={RFPercentage(6)}
+                  color="white"
+                />
+                <Text style={styles.subHeading}>Start</Text>
+              </View>
+            </TouchableOpacity>
+          </View>
+        )}
       </View>
 
       <View style={styles.bottomWrap}>
-        <SimpleLineIcons name="location-pin" size={RFPercentage(2)} color="#c1c1c1" />
-        <Text style={styles.locationText}> {site? site: 'No site'}</Text>
+        <SimpleLineIcons
+          name="location-pin"
+          size={RFPercentage(2)}
+          color="#c1c1c1"
+        />
+        <Text style={styles.locationText}> {site ? site : 'No site'}</Text>
       </View>
-  
     </View>
   )
 }
@@ -159,45 +194,44 @@ const styles = StyleSheet.create({
     height: hp('22%'),
     borderRadius: hp('1.5%'),
     padding: hp('2%'),
-    justifyContent: 'space-around'
+    justifyContent: 'space-around',
   },
-      subHeading: {
-        fontFamily: 'Poppins_400Regular',
-        fontSize: RFPercentage(2.2),
-        color:'#c1c1c1'
-      },
-      locationText: {
-        fontFamily: 'Poppins_400Regular',
-        fontSize: RFPercentage(2.5),
-        color:'#c1c1c1'
-      },
-      timerWrapper: {
-        alignItems: 'baseline',
-        justifyContent: 'space-around',
-        flexDirection: 'row',
-        marginTop: 20,
-      },
-      timer: {
-        fontFamily: 'Poppins_600SemiBold',
-        fontSize: RFPercentage(5.5),
-        color:'#ffffff'
-      },
-      bottomWrap: {
-        flexDirection: 'row',
-        alignItems:'baseline'
+  subHeading: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: RFPercentage(2.2),
+    color: '#c1c1c1',
+  },
+  locationText: {
+    fontFamily: 'Poppins_400Regular',
+    fontSize: RFPercentage(2.5),
+    color: '#c1c1c1',
+  },
+  timerWrapper: {
+    alignItems: 'baseline',
+    justifyContent: 'space-around',
+    flexDirection: 'row',
+    marginTop: 20,
+  },
+  timer: {
+    fontFamily: 'Poppins_600SemiBold',
+    fontSize: RFPercentage(5.5),
+    color: '#ffffff',
+  },
+  bottomWrap: {
+    flexDirection: 'row',
+    alignItems: 'baseline',
   },
   btnWrapper: {
     flex: 1,
-    alignItems:'center'
+    alignItems: 'center',
   },
   timeContainer: {
     flex: 3,
-    alignItems:'center'
-  }
-  ,
+    alignItems: 'center',
+  },
   iconWrapper: {
-    alignItems:'center'
-  }
-});
+    alignItems: 'center',
+  },
+})
 
-export default GeoFencing;
+export default GeoFencing

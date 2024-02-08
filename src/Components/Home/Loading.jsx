@@ -1,59 +1,87 @@
-import React, { useEffect, useState } from 'react'
-import { StatusBar, StyleSheet, Text, View } from 'react-native'
+import { StatusBar, StyleSheet, View } from 'react-native'
+import React from 'react'
+import { SkeletonLoading } from './SkeletonLoading'
 import {
   widthPercentageToDP as wp,
   heightPercentageToDP as hp,
 } from 'react-native-responsive-screen'
-import { RFPercentage } from 'react-native-responsive-fontsize'
-import { PrimaryColor, TextPrimaryColor } from '../constants/Color'
-import GeoFencing from '../Components/Home/GeoFencing'
-import { auth, db } from '../../firebase'
-import ActivityDetails from '../Components/Home/ActivityDetails'
-import { doc, onSnapshot } from 'firebase/firestore'
-import { SkeletonLoading } from '../Components/Home/SkeletonLoading'
-import { useStopWatch } from '../hooks/useStopWatch'
-import { Feather } from '@expo/vector-icons'
-import Loading from '../Components/Home/Loading'
 
-const HomeScreen = () => {
-  const { dataLoaded } = useStopWatch()
-  const [currentUser, setCurrentUser] = useState(
-    auth.currentUser.uid ? auth.currentUser.uid : null
-  )
-  const [loading, setLoading] = useState(false)
-
-  // user details
-  const [user, setUser] = useState()
-
-  // fetch user data
-
-  const getUser = async () => {
-    try {
-      await setLoading(true)
-      const ref = await doc(db, 'Employees', auth.currentUser.uid)
-
-      await onSnapshot(ref, (snapshot) => {
-        setUser(snapshot.data())
-      })
-      await setLoading(false)
-    } catch (error) {
-      console.log('Home err:', error)
-    }
-  }
-
-  useEffect(() => {
-    getUser()
-  }, [])
-
-  if (!dataLoaded || !(currentUser && user)) {
-    return <Loading />
-  }
-
+const Loading = () => {
   return (
     <View style={styles.container}>
-      <Text style={styles.mainHeading}>Summary</Text>
-      <GeoFencing userID={currentUser} site={user.Site_name} />
-      <ActivityDetails user={user} userID={currentUser} />
+      {/* Summary */}
+      <SkeletonLoading background={'#DCDCDC'} highlight={'#EEEEEE'}>
+        <View style={styles.skeMainHeading}></View>
+      </SkeletonLoading>
+      {/* Timmer */}
+      <View style={styles.timerBox}>
+        <SkeletonLoading background={'#DCDCDC'} highlight={'#eeeeee'}>
+          <View>
+            <View style={styles.subHeading} />
+            <View style={styles.timerWrapper}>
+              <View style={styles.timeContainer} />
+
+              <View style={styles.btnWrapper}>
+                <View style={styles.btn}>
+                  <View style={styles.iconWrapper}>
+                    <View style={styles.icon} />
+                    <View style={styles.timer} />
+                  </View>
+                </View>
+              </View>
+            </View>
+            <View style={styles.bottomWrap}>
+              <View style={styles.locationIcon} />
+              <View style={styles.locationText} />
+            </View>
+          </View>
+        </SkeletonLoading>
+      </View>
+
+      {/* Activity Details */}
+      <SkeletonLoading background={'#DCDCDC'} highlight={'#EEEEEE'}>
+        <View>
+          <View style={styles.actText}></View>
+
+          <View style={styles.actBox}>
+            <View style={styles.timeBox}>
+              <View style={styles.label} />
+              <View style={styles.timeText} />
+            </View>
+
+            {/* vertical line */}
+            <View style={styles.verticalLine}></View>
+            <View style={styles.timeBox}>
+              <View style={styles.label} />
+              <View style={styles.timeText} />
+            </View>
+          </View>
+        </View>
+      </SkeletonLoading>
+
+      {/* summary */}
+      <View style={styles.summaryBox}>
+        <View style={styles.timeLogWrapper}>
+          <SkeletonLoading background={'#DCDCDC'} highlight={'#EEEEEE'}>
+            <View>
+              <View style={styles.subHeading} />
+              <View style={styles.timeLog} />
+            </View>
+          </SkeletonLoading>
+        </View>
+
+        {/* horizontal line */}
+
+        <View style={styles.horizontalLine}></View>
+        <View style={styles.timeLogWrapper}>
+          <SkeletonLoading background={'#DCDCDC'} highlight={'#EEEEEE'}>
+            <View>
+              <View style={styles.subHeading} />
+              <View style={styles.timeLog} />
+            </View>
+          </SkeletonLoading>
+        </View>
+      </View>
     </View>
   )
 }
@@ -66,25 +94,16 @@ const styles = StyleSheet.create({
     paddingTop: StatusBar.currentHeight + hp('1%'),
     paddingHorizontal: wp('5%'),
   },
-  mainHeading: {
-    fontFamily: 'Poppins_600SemiBold',
-    fontSize: RFPercentage(5),
-    color: TextPrimaryColor,
+  timerBox: {
+    marginTop: hp('2%'),
+    backgroundColor: '#BCBCBC',
+    width: wp('90%'),
+    height: hp('22%'),
+    borderRadius: hp('1.5%'),
+    padding: hp('2%'),
+    justifyContent: 'space-around',
   },
-  indicator: {
-    flex: 1,
-    justifyContent: 'center',
-    alignItems: 'center',
-  },
-
   // Skeleton
-  SkeletonContainer: {
-    flex: 1,
-    backgroundColor: '#ffffff',
-    // justifyContent: 'center',
-    paddingTop: StatusBar.currentHeight + hp('1%'),
-    paddingHorizontal: wp('5%'),
-  },
   skeMainHeading: {
     width: wp('60%'),
     height: hp('5%'),
@@ -123,7 +142,7 @@ const styles = StyleSheet.create({
   timeContainer: {
     flex: 3,
     alignItems: 'center',
-    width: wp('40%'),
+    width: wp('30%'),
     height: hp('5%'),
     backgroundColor: '#adadad',
     borderRadius: 5,
@@ -189,7 +208,7 @@ const styles = StyleSheet.create({
   },
   summaryBox: {
     marginTop: hp('3%'),
-    backgroundColor: '#4A4A4A',
+    backgroundColor: '#BCBCBC',
     width: wp('90%'),
     height: hp('28%'),
     borderRadius: hp('1.5%'),
@@ -216,4 +235,4 @@ const styles = StyleSheet.create({
   },
 })
 
-export default HomeScreen
+export default Loading
