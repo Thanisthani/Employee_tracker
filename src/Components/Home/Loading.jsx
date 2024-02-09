@@ -226,7 +226,7 @@ const styles = StyleSheet.create({
   horizontalLine: {
     width: wp('90%'),
     height: 0.39,
-    backgroundColor: '#043d54',
+    backgroundColor: '#D9D9D9',
     alignSelf: 'center',
   },
   timeLogWrapper: {
