@@ -88,53 +88,6 @@ const GeoFencing = ({ userID, site }) => {
     setIsStartStorage(isStart)
   }, [isStart])
 
-  // check timer value
-  // if (!dataLoaded) {
-  //   return (
-  //     <SkeletonLoading background={'#adadad'} highlight={'#ffffff'}>
-  //       <View style={{ flexDirection: 'row', justifyContent: 'space-between' }}>
-  //         <View
-  //           style={{
-  //             width: 100,
-  //             height: 100,
-  //             backgroundColor: '#adadad',
-  //             borderRadius: 10,
-  //           }}
-  //         />
-
-  //         <View style={{ flex: 1, marginLeft: 10 }}>
-  //           <View
-  //             style={{
-  //               backgroundColor: '#adadad',
-  //               width: '50%',
-  //               height: 10,
-  //               marginBottom: 3,
-  //               borderRadius: 5,
-  //             }}
-  //           />
-  //           <View
-  //             style={{
-  //               backgroundColor: '#adadad',
-  //               width: '20%',
-  //               height: 8,
-  //               borderRadius: 5,
-  //             }}
-  //           />
-  //           <View
-  //             style={{
-  //               backgroundColor: '#adadad',
-  //               width: '15%',
-  //               height: 8,
-  //               borderRadius: 5,
-  //               marginTop: 3,
-  //             }}
-  //           />
-  //         </View>
-  //       </View>
-  //     </SkeletonLoading>
-  //   )
-  // }
-
   return (
     <View style={styles.timerBox}>
       {/* Timer */}
@@ -147,7 +100,12 @@ const GeoFencing = ({ userID, site }) => {
 
         {isStart ? (
           <View style={styles.btnWrapper}>
-            <TouchableOpacity style={styles.btn} onPress={stopGeo}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => {
+                stopGeo()
+              }}
+            >
               <View style={styles.iconWrapper}>
                 <Feather
                   name="stop-circle"
@@ -160,7 +118,12 @@ const GeoFencing = ({ userID, site }) => {
           </View>
         ) : (
           <View style={styles.btnWrapper}>
-            <TouchableOpacity style={styles.btn} onPress={requestPermission}>
+            <TouchableOpacity
+              style={styles.btn}
+              onPress={() => {
+                requestPermission()
+              }}
+            >
               <View style={styles.iconWrapper}>
                 <Ionicons
                   name="play-outline"
